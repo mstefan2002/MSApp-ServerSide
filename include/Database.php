@@ -50,8 +50,8 @@ class Database
 	 */
 	public function update(string $location, array $arr, ?string $condition, ?array $parms) : mysqli_result|false
 	{
-		$this->checkString(__METHOD__,	array(0=>"location",1=>$location),	1); 	// [ERROR] Location cant be empty
-		$this->checkArray (__METHOD__,	array(0=>"arr",1=>$arr),			1); 	// [ERROR] Array of keys=>values cant be empty
+		$this->checkString(__METHOD__,  array(0=>"location",1=>$location),  1);     // [ERROR] Location cant be empty
+		$this->checkArray (__METHOD__,  array(0=>"arr",1=>$arr),            1);     // [ERROR] Array of keys=>values cant be empty
 
 		$query = "UPDATE `{$location}` SET ";
 		$wasprev = false;
@@ -129,8 +129,8 @@ class Database
 	 */
 	public function insert(string $location, array $arr, ?array $parms) : mysqli_result|false
 	{
-		$this->checkString(__METHOD__, array(0=>"location",1=>$location), 1);	// [ERROR] Location cant be empty
-		$this->checkArray(__METHOD__, array(0=>"arr",1=>$arr), 1);              // [ERROR] Array of keys=>values cant be empty
+		$this->checkString(__METHOD__, array(0=>"location",1=>$location), 1);   // [ERROR] Location cant be empty
+		$this->checkArray (__METHOD__, array(0=>"arr",1=>$arr),           1);   // [ERROR] Array of keys=>values cant be empty
 
 		$keys = "";
 		$values = "";
@@ -225,7 +225,7 @@ class Database
 	 */
 	public function select(?string $select,string $location,?string $condition,?string $other,?array $parms) : mysqli_result|false
 	{
-		$this->checkString(__METHOD__,	array(0=>"location",1=>$location),	1); 	// [ERROR] Location cant be empty
+		$this->checkString(__METHOD__,	array(0=>"location",1=>$location),	1);   // [ERROR] Location cant be empty
 
 		if(is_null($select))
 			$select = "*";
@@ -360,8 +360,8 @@ class Database
 	 */
 	public function cQuery(string $query, array $parms) : mysqli_result|false
 	{
-		$this->checkString(__METHOD__,	array(0=>"query",1=>$query),	1); 	// [ERROR] Query cant be empty
-		$this->checkArray (__METHOD__,	array(0=>"parms",1=>$parms),	0); 	// [INFO]  If we get empty array we should use query instead of cQuery
+		$this->checkString(__METHOD__,  array(0=>"query",1=>$query),    1);     // [ERROR] Query cant be empty
+		$this->checkArray (__METHOD__,  array(0=>"parms",1=>$parms),    0);     // [INFO]  If we get empty array we should use query instead of cQuery
 
 		$this->stmtInit();
 		$this->prepare($query);
