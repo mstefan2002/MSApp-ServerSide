@@ -36,14 +36,11 @@ class Database
 	 * SQL UPDATE query
 	 * @see docs/Database.txt#update
 	 * 
-	 * @param string $location 
-	 * SQL Table name
-	 * @param array $arr
-	 * An array with `column name`=>(`value` `[not recommended]`,`?` (then you parse the value to $parms)`[recommended]`,`null` (the same procedure as ?))
-	 * @param string|null $condition
-	 * The condition for UPDATE query
-	 * @param array|null $parms
-	 * An array with values of `$arr` and `$condition`
+	 * @param string $location         SQL Table name
+	 * @param array $arr               An array with `column name`=>(`value` `[not recommended]`,`?` (then you parse the value to $parms)`[recommended]`,
+	 *                                 `null` (the same procedure as ?))
+	 * @param string|null $condition   The condition for UPDATE query
+	 * @param array|null $parms        An array with values of `$arr` and `$condition`
 	 * 
 	 * @return mysqli_result|false
 	 * 
