@@ -1,0 +1,52 @@
+class Util(static):
+
+		// Editeaza textul pentru htmlsafe
+		// $string 	- textul
+
+		// Returneaza stringul modificat
+		-> protect(string $string) : string
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Returneaza ip-ul clientului
+		-> getUserIP() : string
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Transforma un array in string de tip json
+		// $arr		- array-ul
+
+		// Returneaza un string de tip json(daca array-ul este gol va fi returnat [])
+		-> getJson(array $arr) : string
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Verifica daca parola este de tip sha256(are marimea de 64 char iar toate characterele sunt de forma a-fA-F0-9)
+		// $password	- parola
+
+		// Returneaza true daca parola este valida sau false in caz contrar
+		-> validPassword(string $password) : bool
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Verifica daca email-ul este valid(are marimea < 256 si este validat de filtrul php)
+		// $email	- adresa de email
+
+		// Returneaza true daca email-ul este valid sau false in caz contrar
+		-> validMail(string $email) : bool
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Verifica daca numele este valid(are mai mult de 2 char si mai putin de 65 si toate characterele sunt de tip A-Za-z/spatiu[nu toate])
+		// $name	- numele persoanei
+
+		// Returneaza true daca numele este valid sau false in caz contrar
+		-> validName(string $name) : bool
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Verifica daca tag-ul este valid(are mai mult de 2 char si mai putin de 17 si toate characterele sunt de tip A-Za-z[minim 1 char] sau _-.)
+		// $tag		- tag-ul contului
+
+		// Returneaza true daca tag-ul este valid sau false in caz contrar
+		-> validTag(string $tag) : bool

@@ -1,0 +1,47 @@
+class ProcessingPOST:
+		// Este apelat la crearea obiectului
+		// $log   	-  obiectul LogF pentru scrierea in fisier
+
+		-> construct(LogF $log)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Verifica un element din $_POST daca exista sau este gol
+		// $key		- cheia
+
+		// Returneaza:
+				1 = totul este ok
+				0 = este gol
+			       -1 = nu exista
+			       -2 = wtf exception(cheia introdusa este goala)
+
+		-> checkPOST(string $key) : int
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Verifica mai multe elemente din $_POST daca exista sau sunt goale
+		// $keys			- un array de chei
+		// $dontCheckforEmpty		- un array cu cheile pe care nu vrei sa le verifici daca sunt goale
+						- poate fii null
+
+		// Returneaza un array cu elemente de genul:
+				1 = totul este ok
+				0 = este gol
+			       -1 = nu exista
+			       -2 = wtf exception(cheia introdusa este goala)
+
+		-> checkPOSTS(array $keys,array $dontCheckforEmpty=null) : array
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Editeaza $_POST[key] pentru htmlsafe(docs/Util.txt -> protect)
+		// $key		- cheia
+
+		-> protectPOST(string $key) : void
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Editeaza $_POST[key[]] pentru htmlsafe
+		// $key		- un array de chei
+
+		-> protectPOSTS(array $keys) : void

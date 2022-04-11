@@ -1,0 +1,95 @@
+class Database:
+		// Returneaza rezultatul queryului sau false
+		-> get_result()
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Executa o interogare SQL cu protectie impotriva SQL Injection
+		// $query	- stringul query
+		// $params	- un array cu variabilele trimise ca parametrii(pentru a preveni SQL Injection)
+
+		// Exemplu: $connect->cQuery("UPDATE `accounts` SET `tag` = 'test' WHERE id=?", array(1));
+		// se transcrie in UPDATE `accounts` SET `tag` = 'test' WHERE id='1'
+
+		// Returneaza obiectul mysqli_result sau false in caz de eroare
+		-> cQuery($query,$parms)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Executa interogarea SQL Update cu posibilitatea de protectie impotriva SQL Injection
+		// $location		- locatia tabelului
+		// $arr			- un array cu numele coloanei=>valoare noua(
+		//									valoare		- recomandat doar daca datele sunt obtiunete de la server si nu de la client)
+		//									?		- recomandat pentru protectia impotriva SQL Injection
+											null		- se va inlocui automat cu ?
+		//								   )
+		//			Exemplu: array-ul ["tag","nume"=>"Nume Nou"] este identic cu ["tag"=>"?","nume"=>"Nume Nou"]
+
+		// $condition		- conditia interogarii
+		//			- poate fi null
+		// $parms		- un array cu valorile de la $arr->value sau de la $condition
+		//			- poate fi null
+		//			Exemplu: $arr = array("tag","nume"=>"Nume Nou") // tag nu are valoare, deci il trecem la procedura bind_parm
+		//			$condition = "id=?"				// id nu are valoare, deci il trecem la procedura bind_parm
+		//			$parms = array("tag_nou",5)			// in ordinea de mai sus, "tag_nou" este valoarea lui "tag" iar 5 este valoarea lui "id"
+
+
+		// Exemplu: $connect->update("accounts", array("tag","nume"=>"Nume Nou"), "id=?", array("tag_nou",5));
+		// se transcrie dupa executarea prepare->bind_parm in UPDATE `accounts` SET `tag` = 'tag_nou' WHERE id='5'
+
+		// Returneaza obiectul mysqli_result sau false in caz de eroare
+		-> update(string $location,array $arr,string $condition=null, array $parms=null) : mysqli_result|false
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Functia INSERT Sql`````````````````````````````````````````````````````````````````````
+		// $location		- locatia tabelului
+		// $key			- numele coloanei/coloanelor
+		// $value		- valorile pentru coloane sau ? pentru a folosi bind-area ( PROTEJAT DE SQL INJECTION )
+		// $parms     - array cu valorile bind-ate ( cele din $value )
+		              - poate fi null
+
+		// Exemplu: $connect->insert("accounts", "`name`,`tag`","'Marian',?",array("tag_protejat"));
+		// se transcrie in INSERT INTO `accounts` (`name`,`tag`) VALUES ('Marian','tag_protejat')
+
+		// Returneaza obiectul mysqli_result sau false in caz de eroare
+		-> insert(string $location,string $key,string $value, array $parms=null) : mysqli_result|false
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Functia SELECT Sql
+		// $select    - ce coloane selectezi din tabel
+		//            - poate fi null si se inlocuieste cu * in functie
+		// $location  - locatia tabelului
+		// $condition - conditie pentru a executa SELECT ( WHERE conditie )
+		              - poate fi null
+		// $other     - order/join/etc
+		//            - poate fi null
+		// $parms     - array cu valorile bind-ate ( cele din $select|$condition|$other )
+		              - poate fi null
+
+		// Exemplu: $connect->select("`id`,10-?","accounts",null,array("5"));
+		// se transcrie in SELECT `id`,10-5 FROM `accounts`
+
+		// Returneaza obiectul mysqli_result sau false in caz de eroare
+		-> select(string $select=null,string $location,string $condition=null,string $other=null,array $parms=null) : mysqli_result|false
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Functia DELETE Sql
+		// $location  - locatia tabelului
+		// $condition - conditie pentru a executa DELETE ( WHERE conditie )
+		              - poate fi null
+		// $parms     - array cu valorile bind-ate ( cele din $condition )
+		              - poate fi null
+
+		// Exemplu: $connect->delete("accounts","id=?",array("5"));
+		// se transcrie in DELETE FROM `accounts` WHERE id='5'
+
+		// Returneaza obiectul mysqli_result sau false in caz de eroare
+		-> delete(string $location,string $condition=null,array $parms=null) : mysqli_result|false
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Returneaza ultimul id dupa o executie insert
+		-> lastID()

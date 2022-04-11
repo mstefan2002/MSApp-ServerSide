@@ -1,0 +1,32 @@
+class User:
+		// Este apelat la crearea obiectului
+		// $db   	-  obiectul Database pentru accesarea bazei de date
+
+		-> construct(Database $db)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Verifica daca emai-ul respectiv este in baza de date/parola coincide
+		// $email	- adresa de email
+		// $password	- parola
+				- poate fi null iar verificarea se face doar daca exista contul
+
+		// Returneaza:
+				2 = wtf exception(mai mult de un cont cu acelasi email)
+				1 = contul exista si parola coincide cu cea din baza de date
+				0 = contul exista dar parola nu coincide cu cea din baza de date
+			       -1 = contul nu exista
+			       -2 = contul exista
+
+		-> verify(string $email, string $password="") : int
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		// Inregistreaza un cont nou + trimite un mail de confirmare la adresa de email
+		// $email			- adresa de email[min: 3|max 255]
+		// $password			- parola[min: 64|max: 64]
+		// $name			- numele persoanei[min: 3|max: 64]
+
+		// Returneaza un array format din hash-ul de verificare si cel de stergere(docs/EmailVerify.txt -> add)
+
+		-> add(string $email, string $password, string $name) : array
