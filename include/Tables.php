@@ -1,12 +1,28 @@
 <?php 
 class Tables
 {
+	/**
+	 * Accounts table
+	 *
+	 * @param bool $value
+	 * 
+	 * @return string|Accounts_Rows
+	 * 
+	 */
 	public static function Accounts(bool $value) : string|Accounts_Rows
 	{
 		if($value)
 			return new Accounts_Rows();
 		return "accounts";
 	}
+	/**
+	 * EmailVerification table
+	 *
+	 * @param bool $value
+	 * 
+	 * @return string|EmailVerify_Rows
+	 * 
+	 */
 	public static function EmailVerification(bool $value) : string|EmailVerify_Rows
 	{
 		if($value)

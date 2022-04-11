@@ -7,6 +7,14 @@ class Database
 	private Output $OutPut;
 	private ?mysqli_stmt $stmt = null;
 
+	/**
+	 * Construction
+	 * 
+	 * @param LogF $log
+	 * @param LogF $logQuery
+	 * @param Output $output
+	 * 
+	 */
 	public function __construct(LogF $log, LogF $logQuery, Output $output)
 	{
 		$this->Log = $log;
@@ -24,10 +32,26 @@ class Database
 			$this->setFail("[".__METHOD__."] We cant connect to the database, the error: \"{$this->mysqli->connect_error}\"");	
 	}
 
-	public function update(string $location, array $arr, string $condition=null, array $parms=null) : mysqli_result|false
+	/** 
+	 * SQL UPDATE query
+	 * @see docs/Database.txt#update
+	 * 
+	 * @param string $location 
+	 * SQL Table name
+	 * @param array $arr
+	 * An array with `column name`=>(`value` `[not recommended]`,`?` (then you parse the value to $parms)`[recommended]`,`null` (the same procedure as ?))
+	 * @param string|null $condition
+	 * The condition for UPDATE query
+	 * @param array|null $parms
+	 * An array with values of `$arr` and `$condition`
+	 * 
+	 * @return mysqli_result|false
+	 * 
+	 */
+	public function update(string $location, array $arr, ?string $condition, ?array $parms) : mysqli_result|false
 	{
 		$this->checkString(__METHOD__,	array(0=>"location",1=>$location),	1); 	// [ERROR] Location cant be empty
-		$this->checkArray (__METHOD__,	array(0=>"arr",1=>$arr),		1); 	// [ERROR] Array of keys=>values cant be empty
+		$this->checkArray (__METHOD__,	array(0=>"arr",1=>$arr),			1); 	// [ERROR] Array of keys=>values cant be empty
 
 		$query = "UPDATE `{$location}` SET ";
 		$wasprev = false;
@@ -88,10 +112,25 @@ class Database
 		return $this->cQuery($query,$parms);
 	}
 
-	public function insert(string $location, array $arr, array $parms=null) : mysqli_result|false
+	/** 
+	 * SQL INSERT query
+	 * 
+	 * @see docs/Database.txt#insert
+	 * 
+	 * @param string $location 
+	 * SQL Table name
+	 * @param array $arr
+	 * An array with `column name`=>(`value` `[not recommended]`,`?` (then you parse the value to $parms)`[recommended]`,`null` (the same procedure as ?))
+	 * @param array|null $parms
+	 * An array with values of `$arr`
+	 * 
+	 * @return mysqli_result|false
+	 * 
+	 */
+	public function insert(string $location, array $arr, ?array $parms) : mysqli_result|false
 	{
 		$this->checkString(__METHOD__,	array(0=>"location",1=>$location),	1); 	// [ERROR] Location cant be empty
-		$this->checkArray (__METHOD__,	array(0=>"arr",1=>$arr),		1); 	// [ERROR] Array of keys=>values cant be empty
+		$this->checkArray (__METHOD__,	array(0=>"arr",1=>$arr),			1); 	// [ERROR] Array of keys=>values cant be empty
 
 		$keys = "";
 		$values = "";
@@ -164,7 +203,27 @@ class Database
 			return $this->query($query);
 		return $this->cQuery($query,$parms);
 	}
-	public function select(string $select=null,string $location,string $condition=null,string $other=null,array $parms=null) : mysqli_result|false
+
+	/** 
+	 * SQL SELECT query
+	 * 
+	 * @see docs/Database.txt#select
+	 * 
+	 * @param string|null $select
+	 * Selected columns to get or `null` to be replaced with `*`
+	 * @param string $location
+	 * SQL Table name
+	 * @param string|null $condition
+	 * The condition for SELECT query
+	 * @param string|null $other
+	 * Other parms like order/join/etc
+	 * @param array|null $parms
+	 * An array with values of `$select` , `$condition` and `$other`
+	 * 
+	 * @return mysqli_result|false
+	 * 
+	 */
+	public function select(?string $select,string $location,?string $condition,?string $other,?array $parms) : mysqli_result|false
 	{
 		$this->checkString(__METHOD__,	array(0=>"location",1=>$location),	1); 	// [ERROR] Location cant be empty
 
@@ -182,7 +241,22 @@ class Database
 			return $this->query($query);
 		return $this->cQuery($query,$parms);
 	}
-	public function delete(string $location,string $condition=null,array $parms=null) : mysqli_result|false
+	/**
+	 * SQL DELETE query
+	 *
+	 * @see docs/Database.txt#delete
+	 * 
+	 * @param string $location
+	 * SQL Table name
+	 * @param string|null $condition
+	 * The condition for DELETE query
+	 * @param array|null $parms
+	 * An array with values of `$condition`
+	 * 
+	 * @return mysqli_result|false
+	 * 
+	 */
+	public function delete(string $location, ?string $condition, ?array $parms) : mysqli_result|false
 	{
 		$this->checkString(__METHOD__,	array(0=>"location",1=>$location),	1); 	// [ERROR] Location cant be empty
 
@@ -195,11 +269,32 @@ class Database
 		return $this->cQuery($query,$parms);
 	}
 
+	/**
+	 * Write to log and then throw the output
+	 *
+	 * @param string $string
+	 * 
+	 * @return void
+	 * 
+	 */
 	private function setFail(string $string) : void
 	{
 		$this->Log->Write($string);
 		$this->OutPut->sendError("Internal problems");
 	}
+	/**
+	 * Check if the string is empty
+	 *
+	 * @param string $methodName
+	 * Method Name for log
+	 * @param array $str
+	 * $str[0]=`string Name`, $str[1]=`value of the string`
+	 * @param int $errorType
+	 * `0` will log info that the string is empty, `1` will log error and throw the output to failure
+	 * 
+	 * @return void
+	 * 
+	 */
 	private function checkString(string $methodName, array $str, int $errorType=0) : void
 	{
 		if(empty($str[1]))
@@ -210,6 +305,19 @@ class Database
 				$this->setFail("[{$methodName}][E] We got an empty string for {$str[0]}");
 		}
 	}
+	/**
+	 * Check if the array is empty
+	 *
+	 * @param string $methodName
+	 * Method Name for log
+	 * @param array $str
+	 * $str[0]=`array Name`, $str[1]=`the array`
+	 * @param int $errorType
+	 * `0` will log info that the array is empty, `1` will log error and throw the output to failure
+	 * 
+	 * @return void
+	 * 
+	 */
 	private function checkArray(string $methodName, array $str, int $errorType=0) : void
 	{
 		if(empty($str[1])||!is_array($str[1])||count($str[1]) == 0)
@@ -220,6 +328,14 @@ class Database
 				$this->setFail("[{$methodName}][E] We got an empty array for {$str[0]}");
 		}
 	}
+	/**
+	 * Execute a SQL Query
+	 *
+	 * @param string $query
+	 * 
+	 * @return mysqli_result|false
+	 * 
+	 */
 	public function query(string $query) : mysqli_result|false
 	{
 		$this->checkString(__METHOD__,	array(0=>"query",1=>$query),	1); 	// [ERROR] Query cant be empty	
@@ -233,6 +349,15 @@ class Database
 		return $result;
 
 	}
+	/**
+	 * Execute a SQL Query with prepare->bind_param
+	 *
+	 * @param string $query
+	 * @param array $parms
+	 * 
+	 * @return mysqli_result|false
+	 * 
+	 */
 	public function cQuery(string $query, array $parms) : mysqli_result|false
 	{
 		$this->checkString(__METHOD__,	array(0=>"query",1=>$query),	1); 	// [ERROR] Query cant be empty
@@ -245,6 +370,12 @@ class Database
 		return $this->get_result();
 	}
 
+	/**
+	 * Initializes a mysqli statement
+	 *
+	 * @return void
+	 * 
+	 */
 	private function stmtInit() : void
 	{
 		if(!is_null($this->stmt))
@@ -256,6 +387,14 @@ class Database
 			$this->setFail("[".__METHOD__."][E] We got an error: {$this->stmt->error}");
 	}
 
+	/**
+	 * Prepare the query to statement
+	 *
+	 * @param string $query
+	 * 
+	 * @return void
+	 * 
+	 */
 	private function prepare(string $query) : void
 	{
 		$this->LogQuery->Write($query);
@@ -263,6 +402,14 @@ class Database
 			$this->setFail("[".__METHOD__."][E] We got an error: {$this->stmt->error}");
 	}
 
+	/**
+	 * Parse the parameters to statement
+	 *
+	 * @param array $parms
+	 * 
+	 * @return void
+	 * 
+	 */
 	private function bind_param(array $parms) : void
 	{
 		$type = "";
@@ -277,6 +424,12 @@ class Database
 		$this->LogQuery->Write("bind_parm: {$jsonParms}");
 	}
 
+	/**
+	 * Execute the statement
+	 *
+	 * @return void
+	 * 
+	 */
 	private function execute() : void
 	{
 		try
@@ -289,15 +442,35 @@ class Database
 		}
 		$this->LogQuery->Write("");
 	}
+
+	/**
+	 * Get the result
+	 *
+	 * @return mysqli_result|false
+	 * 
+	 */
 	public function get_result(): mysqli_result|false
 	{
 		return $this->stmt->get_result();
 	}
+
+	/**
+	 * Get the last id from insert
+	 *
+	 * @return int|string
+	 * 
+	 */
 	public function lastID() : int|string
 	{
 		return $this->stmt->insert_id;
 	}
 
+	/**
+	 * Destruct
+	 *
+	 * @return [type]
+	 * 
+	 */
 	public function __destruct()
 	{
 		$this->stmt->close();

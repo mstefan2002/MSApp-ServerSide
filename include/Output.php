@@ -4,11 +4,26 @@ class Output
 	private array $arr = [];
 	private LogF $log;
 
+	/**
+	 * Construct
+	 *
+	 * @param LogF $log
+	 * 
+	 */
 	public function __construct(LogF $log)
 	{
 		$this->log = $log;
 	}
 
+	/**
+	 * Add array to output
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * 
+	 * @return void
+	 * 
+	 */
 	public function add(string $key,$value) : void
 	{
 		if(!empty($key))
@@ -17,6 +32,12 @@ class Output
 			$this->log->Write("[".__METHOD__."][I] The Key is empty");
 	}
 
+	/**
+	 * Send the output and stop the script
+	 *
+	 * @return void
+	 * 
+	 */
 	public function send() : void
 	{
 		$time_end = microtime(true);
@@ -29,6 +50,14 @@ class Output
 		exit();
 	}
 
+	/**
+	 * Send an error output with a message
+	 *
+	 * @param string|array $string
+	 * 
+	 * @return void
+	 * 
+	 */
 	public function sendError(string|array $string) : void
 	{
 		$this->arr = [ "type" => 0, "message" => $string ];

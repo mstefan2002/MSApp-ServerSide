@@ -3,10 +3,25 @@ class ProcessingPOST
 {
 	private LogF $log;
 
+	/**
+	 * Construct
+	 *
+	 * @param LogF $log
+	 * 
+	 */
 	public function __construct(LogF $log)
 	{
 		$this->log = $log;
 	}
+	/**
+	 * Verify a field of `$_POST` if exist and is not empty
+	 *
+	 * @param string $key
+	 * 
+	 * @return int
+	 * `1`=ok, `0`=is empty, `-1`=doesnt exist, `-2`=wtf exception(we got an empty key)
+	 * 
+	 */
 	public function checkPOST(string $key) : int
 	{
 		if(!empty($key))
@@ -23,6 +38,18 @@ class ProcessingPOST
 			$this->log->Write("[".__METHOD__."][E] We got an empty key");
 		return -2;
 	}
+	/**
+	 * Verify some fields of `$_POST` if exists and their are not empty
+	 *
+	 * @param array $keys
+	 * An array with the fields
+	 * @param array $dontCheckforEmpty=null
+	 * An array with exceptions for verify emptiness
+	 * 
+	 * @return array
+	 * An array with values like this (`1`=ok, `0`=is empty, `-1`=doesnt exist, `-2`=wtf exception(we got an empty key))
+	 * 
+	 */
 	public function checkPOSTS(array $keys,array $dontCheckforEmpty=null) : array
 	{
 		$arr = [];
@@ -42,6 +69,14 @@ class ProcessingPOST
 		return $arr;
 	}
 
+	/**
+	 * Will encode a field of `$_POST` to htmlspecialchar [More info on docs/Util.txt#protect]
+	 *
+	 * @param string $key
+	 * 
+	 * @return void
+	 * 
+	 */
 	public function protectPOST(string $key) : void
 	{
 		if(!empty($key))
@@ -59,6 +94,15 @@ class ProcessingPOST
 		else
 			$this->log->Write("[".__METHOD__."][E] We got an empty key");
 	}
+	/**
+	 * Will encode some fields of `$_POST` to htmlspecialchar [More info on docs/Util.txt#protect]
+	 *
+	 * @param array $keys
+	 * An array with the fields
+	 * 
+	 * @return void
+	 * 
+	 */
 	public function protectPOSTS(array $keys) : void
 	{
 		if(count($keys) > 0)
@@ -68,5 +112,4 @@ class ProcessingPOST
 			$this->log->Write("[".__METHOD__."][E] We got an empty array");
 	}
 }
-
 ?>

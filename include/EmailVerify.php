@@ -1,6 +1,15 @@
 <?php
 class EmailVerify
 {
+	/**
+	 * Create 2 hashes(one for verification, one for delete) for email validation then insert them into the database
+	 *
+	 * @param Database $db
+	 * @param string $email
+	 * 
+	 * @return array
+	 * `0`=verifyHash , `1`=deleteHash
+	 */
 	public static function add(Database $db,string $email) : array
 	{
 		$saltVerify = CVar::$saltVerifyCode;

@@ -4,6 +4,13 @@ class LogF
 	private $file=null;
 	private string $filename;
 
+	/**
+	 * Construct
+	 *
+	 * @param string $filename
+	 * The name of the file, the `default` value you can find at Var.php->$LogDefault
+	 * 
+	 */
 	public function __construct(string $filename="")
 	{
 		if(!is_writable("Logs"))
@@ -20,6 +27,14 @@ class LogF
 		}
 	}
 
+	/**
+	 * Writing to the file. The format is like: [`date`+`time`][`type request`] - `text`
+	 *
+	 * @param string $string
+	 * The text
+	 * @return void
+	 * 
+	 */
 	public function Write(string $string) : void
 	{
 		date_default_timezone_set('Europe/Bucharest');
@@ -32,6 +47,12 @@ class LogF
 		if(fwrite($this->file, $txt) === FALSE)
 			error_log("Cannot write to file ({$this->filename})", 0);
 	}
+	/**
+	 * Destruct
+	 *
+	 * @return [type]
+	 * 
+	 */
 	private function __destruct()
 	{
 		if(!is_null($this->file))

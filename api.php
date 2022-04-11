@@ -14,7 +14,6 @@
 	if(!isset($_POST["type"])||empty($_POST["type"]))
 		$output->sendError("Type doesn't exist!");
 
-
 	$pString = new ProcessingPOST(new LogF(CVar::$LogProcPOST));
 	$pString->protectPOST("type");
 
@@ -24,16 +23,19 @@
 
 	switch($type)
 	{
-		// RECEIVED: email + password
-		// Send failure:
-		// 	  email: 4 = wtf exception(multiple acc with the same email)			password:  	3 = password doesn't match
-		//		 3 = account doesn't exist								2 = hackerman / password is not md5	
-		//		 2 = hackerman / email invalid							        0 = password is empty
-		//		 0 = email is empty								       -1 = _post["password"] doesn't exist
-		//		-1 = _post["email"] doesn't exist						       -2 = wtf exception(checkpost get empty key)
-		//		-2 = wtf exception(checkpost get empty key)
-		// Send success:
-		// 	type=1
+		/*
+		RECEIVED: email + password
+		Send failure:
+				type=0
+				email:	 4 = wtf exception(multiple acc with the same email)			password:  	 3 = password doesn't match
+						 3 = account doesn't exist													 2 = hackerman / password is not md5	
+						 2 = hackerman / email invalid							        			 0 = password is empty
+						 0 = email is empty								       						-1 = _post["password"] doesn't exist
+						-1 = _post["email"] doesn't exist											-2 = wtf exception(checkpost get empty key)
+						-2 = wtf exception(checkpost get empty key)
+		Send success:
+				type=1
+		*/
 		case "login": 
 		{
 			$arrPost = ["email","password"];
@@ -72,19 +74,20 @@
 			$output->sendError($response);
 			break;
 		}
-		// RECEIVED: email + password + name
-		// Send failure:
-		//    Stage 1:
-		// 	email/password/name 	: 2 = hackerman / editing the date
-		//				  0 = empty
-		//				 -1 = post doesn't exist
-		//				 -2 = wtf exception(checkpost get empty key)
-		//    Stage 2:
-		//	email			: 3 = account exist
-		//				 -3 = wtf exception(error insert sql)
-		// Send success:
-		// 	type=1
-
+		/*
+		RECEIVED: email + password + name
+		Send failure:
+			Stage 1:
+				email/password/name:	 2 = hackerman / editing the data
+										 0 = empty
+										-1 = post doesn't exist
+										-2 = wtf exception(checkpost get empty key)
+			Stage 2:
+				email:					 3 = account exist
+										-3 = wtf exception(error insert sql)
+		Send success:
+			type=1
+		*/
 		case "register":
 		{
 			$arrPost = ["email","password","name"];
