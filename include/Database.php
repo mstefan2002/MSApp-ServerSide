@@ -129,8 +129,8 @@ class Database
 	 */
 	public function insert(string $location, array $arr, ?array $parms) : mysqli_result|false
 	{
-		$this->checkString(__METHOD__,	array(0=>"location",1=>$location),	1); 	// [ERROR] Location cant be empty
-		$this->checkArray (__METHOD__,	array(0=>"arr",1=>$arr),			1); 	// [ERROR] Array of keys=>values cant be empty
+		$this->checkString(__METHOD__,	array(0=>"location",1=>$location), 1);  // [ERROR] Location cant be empty
+		$this->checkArray (__METHOD__,	array(0=>"arr",1=>$arr),           1);  // [ERROR] Array of keys=>values cant be empty
 
 		$keys = "";
 		$values = "";
