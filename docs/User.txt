@@ -1,32 +1,31 @@
 class User:
-		// Este apelat la crearea obiectului
-		// $db   	-  obiectul Database pentru accesarea bazei de date
+	/**
+	 * Construct
+	 *
+	 * @param Database $db
+	 * 
+	 */
+	public function __construct(Database $db)
 
-		-> construct(Database $db)
+	/**
+	 * Verify if an account exist and optional if the password match
+	 *
+	 * @param string $email        Email of the account
+	 * @param string $password     Password of the account, if is `empty` the password wont be checking
+	 * 
+	 * @return int                 `2`=wtf exception(many accounts with that email), `1`=password match, `0`=password dont match, 
+	 *                             `-1`=the account doesnt exist, `-2`=the account exist
+	 * 
+	 */
+	public function verify(string $email, string $password="") : int
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-		// Verifica daca emai-ul respectiv este in baza de date/parola coincide
-		// $email	- adresa de email
-		// $password	- parola
-				- poate fi null iar verificarea se face doar daca exista contul
-
-		// Returneaza:
-				2 = wtf exception(mai mult de un cont cu acelasi email)
-				1 = contul exista si parola coincide cu cea din baza de date
-				0 = contul exista dar parola nu coincide cu cea din baza de date
-			       -1 = contul nu exista
-			       -2 = contul exista
-
-		-> verify(string $email, string $password="") : int
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-		// Inregistreaza un cont nou + trimite un mail de confirmare la adresa de email
-		// $email			- adresa de email[min: 3|max 255]
-		// $password			- parola[min: 64|max: 64]
-		// $name			- numele persoanei[min: 3|max: 64]
-
-		// Returneaza un array format din hash-ul de verificare si cel de stergere(docs/EmailVerify.txt -> add)
-
-		-> add(string $email, string $password, string $name) : array
+	/**
+	 * Register new account
+	 *
+	 * @param string $email
+	 * @param string $password
+	 * @param string $name
+	 * 
+	 */
+	public function add(string $email, string $password, string $name) : void

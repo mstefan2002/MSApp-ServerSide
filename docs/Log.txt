@@ -1,13 +1,18 @@
 class Log:
-		// Este apelat la crearea obiectului
-		// $filename   -  numele fisierului unde se va scrie
-			       -  daca este null se va introduce fisierul default de logare
+	/**
+	 * Construct
+	 *
+	 * @param string $filename       The name of the file, the `default` value you can find at Var.php->$LogDefault
+	 * 
+	 */
+	public function __construct(string $filename="")
 
-		-> construct(string $filename="")
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-		// Scrie in fisier de forma [data+ora][tipul request] - text
-		// $string     -  text-ul dorit
-
-		-> Write(string $string) : void
+	/**
+	 * Writing to the file. The format is like: [`date`+`time`][`type request`] - `text`
+	 *
+	 * @param string $string    The text
+	 * @return void
+	 * 
+	 */
+	public function Write(string $string) : void

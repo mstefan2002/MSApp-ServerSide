@@ -1,12 +1,12 @@
 class Lang(static):
 
-		// Genereaza mesajele de verificare email(unul html, unul text)
-		// $name 	- numele persoanei
-		// $verifyUrl	- link cu hash-ul de verificare
-		// $deleteUrl	- link cu hash-ul de stergere
-
-		// Returneaza un array format din mesajele de verificare email(unul html, unul text)
-		-> getMailMessage(string $name, string $verifyUrl, string $deleteUrl) : array
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+	/**
+	 * Create 2 messages for email verification, one for html type and one for text type
+	 *
+	 * @param string $name           Person name
+	 * @param string $verifyUrl      Link for email verification
+	 * @param string $deleteUrl      Link for deleting account
+	 * 
+	 * @return array                 `0`= Html, `1` = Text
+	 */
+	public static function getMailMessage(string $name, string $verifyUrl, string $deleteUrl) : array

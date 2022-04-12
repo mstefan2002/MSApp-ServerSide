@@ -65,17 +65,23 @@ class Database:
 
 
 
-		//aici
                 /** 
                 * SQL SELECT query
                 * 
-                * @see docs/Database.txt#select
                 * 
                 * @param string|null $select       Selected columns to get or `null` to be replaced with `*`
                 * @param string $location          SQL Table name
                 * @param string|null $condition    The condition for SELECT query
                 * @param string|null $other        Other parms like order/join/etc
                 * @param array|null $parms         An array with values of `$select` , `$condition` and `$other`
+                *                                  If you have some unsafe data you should use $parms
+                *                                  Example code: $select    = null;                                    // will be replaced with * = everything
+                *                                                $location  = "accounts";                              
+                *                                                $condition = "id=?";                                  // you dont give id a value and you use ? method
+                *                                                $other     = null;
+                *                                                $parms     = array(5);
+                *                                  Above code is equal with this query(with protection for sql injection):
+                *                                  SELECT * FROM `accounts` WHERE `id`='5'
                 * 
                 * @return mysqli_result|false
                 * 
@@ -83,71 +89,64 @@ class Database:
                 public function select(?string $select,string $location,?string $condition,?string $other,?array $parms) : mysqli_result|false
 
 
+                /**
+                * SQL DELETE query
+                *
+                * 
+                * @param string $location          SQL Table name
+                * @param string|null $condition    The condition for DELETE query
+                * @param array|null $parms         An array with values of `$condition`
+                *                                  If you have some unsafe data you should use $parms
+                *                                  Example code: $location  = "accounts";                              
+                *                                                $condition = "id=?";              // you dont give id a value and you use ? method
+                *                                                $parms     = array(5);
+                *                                  Above code is equal with this query(with protection for sql injection):
+                *                                  DELETE FROM `accounts` WHERE `id`='5'
+                * 
+                * @return mysqli_result|false
+                * 
+                */
+                public function delete(string $location, ?string $condition, ?array $parms) : mysqli_result|false
 
-                // Returneaza rezultatul queryului sau false
-                -> get_result()
+
+                /**
+                * Execute a SQL Query
+                *
+                * @param string $query
+                * 
+                * @return mysqli_result|false
+                * 
+                */
+                public function query(string $query) : mysqli_result|false
 
 
-                // Executa o interogare SQL cu protectie impotriva SQL Injection
-                // $query        - stringul query
-                // $params        - un array cu variabilele trimise ca parametrii(pentru a preveni SQL Injection)
 
-                // Exemplu: $connect->cQuery("UPDATE `accounts` SET `tag` = 'test' WHERE id=?", array(1));
-                // se transcrie in UPDATE `accounts` SET `tag` = 'test' WHERE id='1'
+                /**
+                * Execute a SQL Query with prepare->bind_param
+                *
+                * @param string $query
+                * @param array $parms
+                * 
+                * @return mysqli_result|false
+                * 
+                */
+                public function cQuery(string $query, array $parms) : mysqli_result|false
 
-                // Returneaza obiectul mysqli_result sau false in caz de eroare
-                -> cQuery($query,$parms)
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-                // Functia INSERT Sql`````````````````````````````````````````````````````````````````````
-                // $location                - locatia tabelului
-                // $key                        - numele coloanei/coloanelor
-                // $value                - valorile pentru coloane sau ? pentru a folosi bind-area ( PROTEJAT DE SQL INJECTION )
-                // $parms     - array cu valorile bind-ate ( cele din $value )
-                              - poate fi null
+                /**
+                * Get the result
+                *
+                * @return mysqli_result|false
+                * 
+                */
+                public function get_result(): mysqli_result|false
 
-                // Exemplu: $connect->insert("accounts", "`name`,`tag`","'Marian',?",array("tag_protejat"));
-                // se transcrie in INSERT INTO `accounts` (`name`,`tag`) VALUES ('Marian','tag_protejat')
 
-                // Returneaza obiectul mysqli_result sau false in caz de eroare
-                -> insert(string $location,string $key,string $value, array $parms=null) : mysqli_result|false
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-                // Functia SELECT Sql
-                // $select    - ce coloane selectezi din tabel
-                //            - poate fi null si se inlocuieste cu * in functie
-                // $location  - locatia tabelului
-                // $condition - conditie pentru a executa SELECT ( WHERE conditie )
-                              - poate fi null
-                // $other     - order/join/etc
-                //            - poate fi null
-                // $parms     - array cu valorile bind-ate ( cele din $select|$condition|$other )
-                              - poate fi null
-
-                // Exemplu: $connect->select("`id`,10-?","accounts",null,array("5"));
-                // se transcrie in SELECT `id`,10-5 FROM `accounts`
-
-                // Returneaza obiectul mysqli_result sau false in caz de eroare
-                -> select(string $select=null,string $location,string $condition=null,string $other=null,array $parms=null) : mysqli_result|false
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-                // Functia DELETE Sql
-                // $location  - locatia tabelului
-                // $condition - conditie pentru a executa DELETE ( WHERE conditie )
-                              - poate fi null
-                // $parms     - array cu valorile bind-ate ( cele din $condition )
-                              - poate fi null
-
-                // Exemplu: $connect->delete("accounts","id=?",array("5"));
-                // se transcrie in DELETE FROM `accounts` WHERE id='5'
-
-                // Returneaza obiectul mysqli_result sau false in caz de eroare
-                -> delete(string $location,string $condition=null,array $parms=null) : mysqli_result|false
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-                // Returneaza ultimul id dupa o executie insert
-                -> lastID()
+                /**
+                * Get the last id from insert
+                *
+                * @return int|string
+                * 
+                */
+                public function lastID() : int|string

@@ -1,11 +1,11 @@
 class EmailVerify(static):
 
-		// Creeaza 2 hash-uri(unul de verificare, altul de stergere) pentru verificarea emailului si le adauga in baza de date
-		// $db 		- obiectul bazei de date
-		// $email	- adresa de mail
-
-		// Returneaza un array format din hash-ul de verificare si cel de stergere
-		-> add(Database $db,string $email) : array
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+	/**
+	 * Create 2 hashes(one for verification, one for delete) for email validation then insert them into the database
+	 *
+	 * @param Database $db
+	 * @param string $email
+	 * 
+	 * @return array            `0`=verifyHash , `1`=deleteHash
+	 */
+	public static function add(Database $db,string $email) : array

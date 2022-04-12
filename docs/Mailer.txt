@@ -1,34 +1,54 @@
 class Mailer:
-		// Este apelat la crearea obiectului
-		// $pLog   	- obiectul LogF pentru scriere in fisier
-		// $pMail	- obiectul PHPMailer pentru a trimite email-uri 
+	/**
+	 * Construct
+	 *
+	 * @param LogF $pLog
+	 * @param PHPMailer\PHPMailer\PHPMailer $pMail
+	 * 
+	 */
+	public function __construct(LogF $pLog, PHPMailer\PHPMailer\PHPMailer $pMail)
 
-		-> construct(LogF $pLog, PHPMailer\PHPMailer\PHPMailer $pMail)
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/**
+	 * Clear all the address from mailer
+	 *
+	 * @return void
+	 * 
+	 */
+	public function clearAllRecipients() : void
 
-		// Sterge toate adresele de email stocate in obiect
 
-		-> clearAllRecipients() : void
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/**
+	 * Add an address to the mailer
+	 *
+	 * @param string $email
+	 * 
+	 * @return void
+	 * 
+	 */
+	public function addAddress(string $email) : void
 
-		// Adauga adresa de email in obiect
 
-		-> addAddress(string $email) : void
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/**
+	 * Edit the content
+	 *
+	 * @param string $subject            The title of the mail
+	 * @param string $body               The message in html format
+	 * @param string $altbody            The message in text format, `default` is the same as `$body`
+	 * 
+	 * @return void
+	 * 
+	 */
+	public function content(string $subject, string $body, string $altbody="") : void
 
-		// Scrie subiectul si mesajul email-ului
-		// $subject	- subiectul email-ului
-		// $body	- mesajul in format html
-		// $altbody	- mesajul in format text
-				- daca este null se va folosi mesajul de la html
 
-		-> content(string $subject, string $body, string $altbody="") : void
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-		// Trimite email-ul
-
-		-> send() : void
+	/**
+	 * Send the mail
+	 *
+	 * @return void
+	 * 
+	 */
+	public function send() : void

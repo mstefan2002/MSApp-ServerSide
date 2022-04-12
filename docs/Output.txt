@@ -1,25 +1,40 @@
 class Output:
-		// Este apelat la crearea obiectului
-		// $log   	-  obiectul LogF pentru scriere in fisier
+	/**
+	 * Construct
+	 *
+	 * @param LogF $log
+	 * 
+	 */
+	public function __construct(LogF $log)
 
-		-> construct(LogF $log)
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/**
+	 * Add array to output
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * 
+	 * @return void
+	 * 
+	 */
+	public function add(string $key,$value) : void
 
-		// Adauga in HashMap-ul de response
-		// $key		- cheia map-ei
-		// $value	- valoarea map-ei
 
-		-> add(string $key,$value) : void
+	/**
+	 * Send the output and stop the script
+	 *
+	 * @return void
+	 * 
+	 */
+	public function send() : void
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-		// Trimite HashMap-ul in forma de json
-
-		-> send() : void
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-		// Modifica HashMap-ul curent cu type 0(eroare) si un mesaj
-		// $string	- mesajul erorii, poate fi de forma string sau array
-		-> sendError(string|array $string) : void
+	/**
+	 * Send an error output with a message
+	 *
+	 * @param string|array $string
+	 * 
+	 * @return void
+	 * 
+	 */
+	public function sendError(string|array $string) : void
