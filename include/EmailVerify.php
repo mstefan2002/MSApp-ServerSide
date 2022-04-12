@@ -7,8 +7,7 @@ class EmailVerify
 	 * @param Database $db
 	 * @param string $email
 	 * 
-	 * @return array
-	 * `0`=verifyHash , `1`=deleteHash
+	 * @return array            `0`=verifyHash , `1`=deleteHash
 	 */
 	public static function add(Database $db,string $email) : array
 	{

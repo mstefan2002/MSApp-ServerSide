@@ -71,12 +71,9 @@ class Mailer
 	/**
 	 * Edit the content
 	 *
-	 * @param string $subject
-	 * The title of the mail
-	 * @param string $body
-	 * The message in html format
-	 * @param string $altbody
-	 * The message in text format, `default` is the same as `$body`
+	 * @param string $subject            The title of the mail
+	 * @param string $body               The message in html format
+	 * @param string $altbody            The message in text format, `default` is the same as `$body`
 	 * 
 	 * @return void
 	 * 

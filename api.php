@@ -5,20 +5,28 @@
 	// Loading classes
 	require_once("include/autoload.php");
 
+	// Make the output object
 	$output = new Output(new LogF(CVar::$LogOutput));
 
+	// Make the main log address
 	$log = new LogF();
 
+	// Connect to the database
 	$db = new Database($log,new LogF(CVar::$LogQuery),$output);
 
+	// Check if is any type of request
 	if(!isset($_POST["type"])||empty($_POST["type"]))
+	{
 		$output->sendError("Type doesn't exist!");
+	}
 
-	$pString = new ProcessingPOST(new LogF(CVar::$LogProcPOST));
-	$pString->protectPOST("type");
+	// We make a processing object to process the $_POST's
+	$pString = new ProcessingPOST(new LogF(CVar::$LogProcPOST), $output);
+	$pString->protectPOST("type");	// We encode $_POST['type'] to html special char
 
-	$type = $_POST["type"];
+	$type = $_POST["type"];			// Transfer the value into $type
 
+	// Make the user object
 	$user = new User($db);
 
 	switch($type)
@@ -49,45 +57,48 @@
 		*/
 		case "login": 
 		{
-			$arrPost = ["email","password"];
-			$response = $pString->checkPOSTS($arrPost);
-			if(count($response) == 0)
+			$arrPost = ["email","password"];                       // Create an array with the fields of the received $_POST
+			$response = $pString->checkPOSTS($arrPost);            // Verify them if they exist and they are not empty
+			if(count($response) == 0)                              // If the response is an empty array then everything is ok
 			{
-				list($arrPost[0]=>$email,$arrPost[1]=>$password) = $_POST;
-				if(!Util::validMail($email))
+				$fieldsPost = $pString->extractFields($arrPost);   // Extract the fields from $_POST
+				extract($fieldsPost);                              // Turn fields to variable
+				if(!Util::validMail($email))                       // Checking mail
 				{
 					$log->Write("Someone modify the Java Client Side and used this email {$email}");
 					$output->sendError(array($arrPost[0]=>2));
 				}
-				if(!Util::validPassword($password))
+				if(!Util::validPassword($password))                // Checking password
 				{
 					$log->Write("Someone modify the Java Client Side and used this password {$password}");
 					$output->sendError(array($arrPost[1]=>2));
 				}
-				switch($user->verify($email,$password))
+				// Checking the account
+				switch($user->verify($email,$password))            
 				{
-					case 2:
+					case 2:	// wtf exception(multiple acc with the same email)
 					{
 						$LogsF->Write("We find many accounts with this email {$email}");
 						$output->sendError(array($arrPost[0]=>4));
 						break;
 					}
-					case 1:
+					case 1: // everything is ok
 					{
 						$output->add("type",1);
 						$output->send();
 						break;
 					}
-					case -1:	$output->sendError(array($arrPost[0]=>3));break;
-					default:	$output->sendError(array($arrPost[1]=>3));break;
+					case -1:	$output->sendError(array($arrPost[0]=>3));break;   // account doesnt exist
+					default:	$output->sendError(array($arrPost[1]=>3));break;   // 0=password doesnt match
 				}
 			}
-			$output->sendError($response);
+			$output->sendError($response); // We find some problems about one or many fields(empty/doesnt exist)
 			break;
 		}
 		/*
 		RECEIVED: email + password + name
 		Send failure:
+			type=0
 			Stage 1:
 				email/password/name:
 				{
@@ -107,46 +118,49 @@
 		*/
 		case "register":
 		{
-			$arrPost = ["email","password","name"];
-			$response = $pString->checkPOSTS($arrPost);
-			if(count($response) == 0)
+			$arrPost = ["email","password","name"];                    // Create an array with the fields of the received $_POST
+			$response = $pString->checkPOSTS($arrPost);                // Verify them if they exist and they are not empty
+			if(count($response) == 0)                                  // If the response is an empty array then everything is ok
 			{
-				list($arrPost[0]=>$email,$arrPost[1]=>$password,$arrPost[2]=>$name) = $_POST;
-				if(!Util::validMail($email))
+				$fieldsPost = $pString->extractFields($arrPost);       // Extract the fields from $_POST
+				extract($fieldsPost);                                  // Turn fields to variable
+				if(!Util::validMail($email))                           // Checking email
 				{
 					$log->Write("Someone modify the Java Client Side and used this email {$email}");
 					$output->sendError(array($arrPost[0]=>2));
 				}
-				if(!Util::validPassword($password))
+				if(!Util::validPassword($password))                    // Checking password
 				{
 					$log->Write("Someone modify the Java Client Side and used this password {$password}");
 					$output->sendError(array($arrPost[1]=>2));
 				}
-				if(!Util::validName($name))
+				if(!Util::validName($name))                            // Checking name
 				{
 					$log->Write("Someone modify the Java Client Side and used this name {$name}");
 					$output->sendError(array($arrPost[2]=>2));
 				}
 
-				if($user->verify($email) == -1)
+				if($user->verify($email) == -1)                        // Checking if the account doesnt exist
 				{
-					list($verifyUrl,$deleteUrl) = $user->add($email,$password,$name);
-					list($body,$altbody) = Lang::getMailMessage($email,$verifyUrl,$deleteUrl);
+					$user->add($email,$password,$name);                                                         // Register account
 
-					$mail = new Mailer(new LogF(CVar::$LogMailer),new PHPMailer\PHPMailer\PHPMailer(true));
-					$mail->addAddress($email);
-					$mail->content("Confirm your email address",$body,$altbody);
-					$mail->send();
+					list($verifyUrl,$deleteUrl) = EmailVerify::add($db,$email);		                            // Get verify url and delete url and insert them into database
+					list($body,$altbody) = Lang::getMailMessage($email,$verifyUrl,$deleteUrl);                  // Get message for the mail
 
-					$output->add("type",1);
-					$output->send();
+					$mail = new Mailer(new LogF(CVar::$LogMailer),new PHPMailer\PHPMailer\PHPMailer(true));     // Create the mailer object
+					$mail->addAddress($email);                                                                  // Add the address to the mailer									
+					$mail->content("Confirm your email address",$body,$altbody);                                // Put the title and the messages to the mailer
+					$mail->send();                                                                              // Send the mail
+
+					$output->add("type",1);                                                                     // Everything is ok
+					$output->send();                                                                            // Send the response to the Client Side
 				}
-				$output->sendError(array($arrPost[0]=>3));
+				$output->sendError(array($arrPost[0]=>3));             // Account exist so we output error
 			}
-			$output->sendError($response);
+			$output->sendError($response); // We find some problems about one or many fields(empty/doesnt exist)
 			break;
 		}
 	}
 
-	$output->add("type",-1);
+	$output->add("type",-1); // We didnt find any request so we throw type = -1(undefined)
 	$output->send();

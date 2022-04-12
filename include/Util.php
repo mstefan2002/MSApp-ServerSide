@@ -47,8 +47,7 @@ class Util
 	 *
 	 * @param array $arr
 	 * 
-	 * @return string
-	 * If the json encode fail, will return an empty json = []
+	 * @return string  If the json encode fail, will return an empty json = []
 	 * 
 	 */
 	public static function getJson(array $arr) : string

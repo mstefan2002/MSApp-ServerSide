@@ -33,19 +33,113 @@ class Tables
 }
 class Accounts_Rows
 {
-	public string $id		=		"id";
-	public string $name		=		"fullname";
-	public string $tag		=		"tag";
-	public string $email		=		"email";
-	public string $password 	=		"password";
-	public string $emailVerify	=		"email_verify";
+	/**
+	 * Primary Key     |
+	 * Auto Increment  |
+	 * Not NULL        |
+	 * Type: INT(MaxLen: 11)
+	 *
+	 * @var string
+	 */
+	public string $id           =       "id";
+
+
+	/**
+	 * Unique Key      |
+	 * Not NULL        |
+	 * Type: VARCHAR(MaxLen: 255)
+	 *
+	 * @var string
+	 */
+	public string $email        =       "email";
+
+
+	/**
+	 * Not NULL        |
+	 * Type: VARCHAR(MaxLen: 64)
+	 *
+	 * @var string
+	 */
+	public string $name         =       "fullname";
+
+
+	/**
+	 * Not NULL        |
+	 * Type: VARCHAR(MaxLen: 16)
+	 *
+	 * @var string
+	 */
+	public string $tag          =       "tag";
+
+
+	/**
+	 * Encode Type: SHA256   |
+	 * Not NULL              | 
+	 * Type: VARCHAR(MaxLen: 64)
+	 *
+	 * @var string
+	 */
+	public string $password     =       "password";
+
+
+	/**
+	 * NULL        |
+	 * Type: INT(MaxLen: 1)
+	 *
+	 * @var string
+	 */
+	public string $emailVerify  =       "email_verify";
 }
 class EmailVerify_Rows
 {
-	public string $id		=		"id";
-	public string $email		=		"email";
+	/**
+	 * Primary Key        |
+	 * Auto Increment     |
+	 * Not NULL           |
+	 * Type: INT(MaxLen: 11)
+	 *
+	 * @var string
+	 */
+	public string $id           =       "id";
+
+
+	/**
+	 * Unique Key        |
+	 * Not NULL          |
+	 * Type: VARCHAR(MaxLen: 255)
+	 *
+	 * @var string
+	 */
+	public string $email        =       "email";
+
+
+	/**
+	 * Encode Type: SHA256    |
+	 * Not NULL               |
+	 * Type: VARCHAR(MaxLen: 64)
+	 *
+	 * @var string
+	 */
 	public string $verifyCode 	=		"verifyCode";
+
+
+	/**
+	 * Encode Type: SHA256    |
+	 * Not NULL               |
+	 * Type: VARCHAR(MaxLen: 64)
+	 *
+	 * @var string
+	 */
 	public string $deleteCode	=		"deleteCode";
+
+
+	/**
+	 * Default: CURRENT_TIMESTAMP        |
+	 * Not NULL                          |
+	 * Type: TIMESTAMP
+	 *
+	 * @var string
+	 */
 	public string $created		=		"created";
 }
 

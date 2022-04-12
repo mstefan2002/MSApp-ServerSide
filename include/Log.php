@@ -7,8 +7,7 @@ class LogF
 	/**
 	 * Construct
 	 *
-	 * @param string $filename
-	 * The name of the file, the `default` value you can find at Var.php->$LogDefault
+	 * @param string $filename       The name of the file, the `default` value you can find at Var.php->$LogDefault
 	 * 
 	 */
 	public function __construct(string $filename="")
@@ -30,8 +29,7 @@ class LogF
 	/**
 	 * Writing to the file. The format is like: [`date`+`time`][`type request`] - `text`
 	 *
-	 * @param string $string
-	 * The text
+	 * @param string $string    The text
 	 * @return void
 	 * 
 	 */
@@ -49,9 +47,6 @@ class LogF
 	}
 	/**
 	 * Destruct
-	 *
-	 * @return [type]
-	 * 
 	 */
 	private function __destruct()
 	{

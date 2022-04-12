@@ -114,12 +114,9 @@ class Database
 	 * 
 	 * @see docs/Database.txt#insert
 	 * 
-	 * @param string $location 
-	 * SQL Table name
-	 * @param array $arr
-	 * An array with `column name`=>(`value` `[not recommended]`,`?` (then you parse the value to $parms)`[recommended]`,`null` (the same procedure as ?))
-	 * @param array|null $parms
-	 * An array with values of `$arr`
+	 * @param string $location         SQL Table name
+	 * @param array $arr               An array with `column name`=>(`value` `[not recommended]`,`?` (then you parse the value to $parms)`[recommended]`,`null` (the same procedure as ?))
+	 * @param array|null $parms        An array with values of `$arr`
 	 * 
 	 * @return mysqli_result|false
 	 * 
@@ -206,16 +203,11 @@ class Database
 	 * 
 	 * @see docs/Database.txt#select
 	 * 
-	 * @param string|null $select
-	 * Selected columns to get or `null` to be replaced with `*`
-	 * @param string $location
-	 * SQL Table name
-	 * @param string|null $condition
-	 * The condition for SELECT query
-	 * @param string|null $other
-	 * Other parms like order/join/etc
-	 * @param array|null $parms
-	 * An array with values of `$select` , `$condition` and `$other`
+	 * @param string|null $select       Selected columns to get or `null` to be replaced with `*`
+	 * @param string $location          SQL Table name
+	 * @param string|null $condition    The condition for SELECT query
+	 * @param string|null $other        Other parms like order/join/etc
+	 * @param array|null $parms         An array with values of `$select` , `$condition` and `$other`
 	 * 
 	 * @return mysqli_result|false
 	 * 
@@ -243,12 +235,9 @@ class Database
 	 *
 	 * @see docs/Database.txt#delete
 	 * 
-	 * @param string $location
-	 * SQL Table name
-	 * @param string|null $condition
-	 * The condition for DELETE query
-	 * @param array|null $parms
-	 * An array with values of `$condition`
+	 * @param string $location          SQL Table name
+	 * @param string|null $condition    The condition for DELETE query
+	 * @param array|null $parms         An array with values of `$condition`
 	 * 
 	 * @return mysqli_result|false
 	 * 
@@ -282,12 +271,9 @@ class Database
 	/**
 	 * Check if the string is empty
 	 *
-	 * @param string $methodName
-	 * Method Name for log
-	 * @param array $str
-	 * $str[0]=`string Name`, $str[1]=`value of the string`
-	 * @param int $errorType
-	 * `0` will log info that the string is empty, `1` will log error and throw the output to failure
+	 * @param string $methodName      Method Name for log
+	 * @param array $str              $str[0]=`string Name`, $str[1]=`value of the string`
+	 * @param int $errorType          `0` will log info that the string is empty, `1` will log error and throw the output to failure
 	 * 
 	 * @return void
 	 * 
@@ -305,12 +291,9 @@ class Database
 	/**
 	 * Check if the array is empty
 	 *
-	 * @param string $methodName
-	 * Method Name for log
-	 * @param array $str
-	 * $str[0]=`array Name`, $str[1]=`the array`
-	 * @param int $errorType
-	 * `0` will log info that the array is empty, `1` will log error and throw the output to failure
+	 * @param string $methodName     Method Name for log
+	 * @param array $str             $str[0]=`array Name`, $str[1]=`the array`
+	 * @param int $errorType         `0` will log info that the array is empty, `1` will log error and throw the output to failure
 	 * 
 	 * @return void
 	 * 
@@ -464,9 +447,6 @@ class Database
 
 	/**
 	 * Destruct
-	 *
-	 * @return [type]
-	 * 
 	 */
 	public function __destruct()
 	{

@@ -4,15 +4,11 @@ class Lang
 	/**
 	 * Create 2 messages for email verification, one for html type and one for text type
 	 *
-	 * @param string $name
-	 * Person name
-	 * @param string $verifyUrl
-	 * Link for email verification
-	 * @param string $deleteUrl
-	 * Link for deleting account
+	 * @param string $name           Person name
+	 * @param string $verifyUrl      Link for email verification
+	 * @param string $deleteUrl      Link for deleting account
 	 * 
-	 * @return array
-	 * `0`= Html, `1` = Text
+	 * @return array                 `0`= Html, `1` = Text
 	 */
 	public static function getMailMessage(string $name, string $verifyUrl, string $deleteUrl) : array
 	{
