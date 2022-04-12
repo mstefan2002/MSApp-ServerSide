@@ -22,9 +22,9 @@
 
 	// We make a processing object to process the $_POST's
 	$pString = new ProcessingPOST(new LogF(CVar::$LogProcPOST), $output);
-	$pString->protectPOST("type");	// We encode $_POST['type'] to html special char
+	$pString->protectPOST("type");  // We encode $_POST['type'] to html special char
 
-	$type = $_POST["type"];			// Transfer the value into $type
+	$type = $_POST["type"];         // Transfer the value into $type
 
 	// Make the user object
 	$user = new User($db);
@@ -144,7 +144,7 @@
 				{
 					$user->add($email,$password,$name);                                                         // Register account
 
-					list($verifyUrl,$deleteUrl) = EmailVerify::add($db,$email);		                            // Get verify url and delete url and insert them into database
+					list($verifyUrl,$deleteUrl) = EmailVerify::add($db,$email);                                 // Get verify url and delete url and insert them into database
 					list($body,$altbody) = Lang::getMailMessage($email,$verifyUrl,$deleteUrl);                  // Get message for the mail
 
 					$mail = new Mailer(new LogF(CVar::$LogMailer),new PHPMailer\PHPMailer\PHPMailer(true));     // Create the mailer object
