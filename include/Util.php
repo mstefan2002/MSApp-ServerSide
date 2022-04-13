@@ -58,16 +58,16 @@ class Util
 	}
 
 	/**
-	 * Check if the password is sha256(64 len and all the chars is like a-fA-F0-9)
+	 * Check if the string is a hash like sha256(64 len and all the chars is like a-fA-F0-9)
 	 *
-	 * @param string $password
+	 * @param string $string
 	 * 
 	 * @return bool
 	 * 
 	 */
-	public static function validPassword(string $password) : bool
+	public static function validHash256(string $string) : bool
 	{
-		if(strlen($password) != 64||!ctype_xdigit($password))
+		if(strlen($string) != 64||!ctype_xdigit($string))
 			return false;
 
 		return true;

@@ -38,3 +38,12 @@ class Output:
 	 * 
 	 */
 	public function sendError(string|array $string) : void
+
+
+	/**
+	 * Send 403 Not Allowed
+	 *
+	 * @return void
+	 * 
+	 */
+	public function sendHtmlError()

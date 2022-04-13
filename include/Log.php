@@ -40,6 +40,8 @@ class LogF
 		$type = "null";
 		if(isset($_POST['type']))
 			$type = $_POST['type'];
+		elseif(isset($_GET['type']))
+			$type = $_GET['type'];
 
 		$txt = "[{$time}][{$type}] - {$string}\n";
 		if(fwrite($this->file, $txt) === FALSE)

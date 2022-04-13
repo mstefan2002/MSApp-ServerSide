@@ -9,3 +9,28 @@ class EmailVerify(static):
 	 * @return array            `0`=verifyHash , `1`=deleteHash
 	 */
 	public static function add(Database $db,string $email) : array
+
+
+	/**
+	 * Verify if the hash exist in email verification
+	 *
+	 * @param string $email
+	 * @param int $type            `0`=verify,      `1`=delete
+	 * 
+	 * @return int                 `2`  =wtf exception(many rows with the email), `1`=hash match, `0`=hash doesnt match, 
+	 *                             `-1` =email doesnt have any verification
+	 * 
+	 */
+	public static function verify(Database $db, string $email, string $hash, int $type=0) : int
+
+
+	/**
+	 * Remove the hashes from the email verification db
+	 *
+	 * @param Database $db
+	 * @param string $email
+	 * 
+	 * @return void
+	 * 
+	 */
+	public static function remove(Database $db, string $email) : void

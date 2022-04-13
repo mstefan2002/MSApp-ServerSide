@@ -63,5 +63,17 @@ class Output
 		$this->arr = [ "type" => 0, "message" => $string ];
 		$this->send();
 	}
+
+	/**
+	 * Send 403 Not Allowed
+	 *
+	 * @return void
+	 * 
+	 */
+	public function sendHtmlError() : void
+	{
+		header("HTTP/1.0 403 Not Allowed");
+		exit();
+	}
 }
 ?>

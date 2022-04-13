@@ -1,7 +1,11 @@
 <?php 
-	// Testing Time
-	$GLOBALS['time_start'] = microtime(true);
 
+	/*
+	* type = 1 (success)
+	* type = 0 (error)
+	* type = -1 (undefined)[a type was gived but we didnt find a match]
+	* type = -2 (token is not valid)
+	*/
 	// Loading classes
 	require_once("include/autoload.php");
 
@@ -11,23 +15,27 @@
 	// Make the main log address
 	$log = new LogF();
 
+	// We make a processing object to process the $_POST's
+	$pRequest = new ProcessingRequest(new LogF(CVar::$LogProcReq), $output);
+
+	// Check if the token exist and is valid
+	if($pRequest->check("token") != 1)
+	{	$output->sendError("Token doesn't exist!");	}
+	elseif(!hash_equals($_POST["token"],CVar::$tokenApi))
+	{
+		$output->add("type",-2);
+		$output->send();
+	}
+
 	// Connect to the database
 	$db = new Database($log,new LogF(CVar::$LogQuery),$output);
 
 	// Check if is any type of request
-	if(!isset($_POST["type"])||empty($_POST["type"]))
-	{
-		$output->sendError("Type doesn't exist!");
-	}
+	if($pRequest->check("type") != 1)
+	{	$output->sendError("Type doesn't exist!");	}
 
-	// We make a processing object to process the $_POST's
-	$pString = new ProcessingPOST(new LogF(CVar::$LogProcPOST), $output);
-	$pString->protectPOST("type");  // We encode $_POST['type'] to html special char
-
+	$pRequest->protect("type");      // We encode $_POST['type'] to html special char
 	$type = $_POST["type"];         // Transfer the value into $type
-
-	// Make the user object
-	$user = new User($db);
 
 	switch($type)
 	{
@@ -57,24 +65,28 @@
 		*/
 		case "login": 
 		{
-			$arrPost = ["email","password"];                       // Create an array with the fields of the received $_POST
-			$response = $pString->checkPOSTS($arrPost);            // Verify them if they exist and they are not empty
-			if(count($response) == 0)                              // If the response is an empty array then everything is ok
+			$arrPost = ["email","password"];                        // Create an array with the fields of the received $_POST
+			$response = $pRequest->check($arrPost);                 // Verify them if they exist and they are not empty
+			if(count($response) == 0)                               // If the response is an empty array then everything is ok
 			{
-				$fieldsPost = $pString->extractFields($arrPost);   // Extract the fields from $_POST
-				extract($fieldsPost);                              // Turn fields to variable
-				if(!Util::validMail($email))                       // Checking mail
+				$fieldsPost = $pRequest->extractFields($arrPost);   // Extract the fields from $_POST
+				extract($fieldsPost);                               // Turn fields to variable
+				if(!Util::validMail($email))                        // Checking mail
 				{
 					$log->Write("Someone modify the Java Client Side and used this email {$email}");
 					$output->sendError(array($arrPost[0]=>2));
 				}
-				if(!Util::validPassword($password))                // Checking password
+				if(!Util::validHash256($password))                  // Checking password
 				{
 					$log->Write("Someone modify the Java Client Side and used this password {$password}");
 					$output->sendError(array($arrPost[1]=>2));
 				}
+
+				// Make the user object
+				$user = new User($db, $email);
+
 				// Checking the account
-				switch($user->verify($email,$password))            
+				switch($user->verify($password))            
 				{
 					case 2:	// wtf exception(multiple acc with the same email)
 					{
@@ -119,17 +131,17 @@
 		case "register":
 		{
 			$arrPost = ["email","password","name"];                    // Create an array with the fields of the received $_POST
-			$response = $pString->checkPOSTS($arrPost);                // Verify them if they exist and they are not empty
+			$response = $pRequest->check($arrPost);                    // Verify them if they exist and they are not empty
 			if(count($response) == 0)                                  // If the response is an empty array then everything is ok
 			{
-				$fieldsPost = $pString->extractFields($arrPost);       // Extract the fields from $_POST
+				$fieldsPost = $pRequest->extractFields($arrPost);      // Extract the fields from $_POST
 				extract($fieldsPost);                                  // Turn fields to variable
 				if(!Util::validMail($email))                           // Checking email
 				{
 					$log->Write("Someone modify the Java Client Side and used this email {$email}");
 					$output->sendError(array($arrPost[0]=>2));
 				}
-				if(!Util::validPassword($password))                    // Checking password
+				if(!Util::validHash256($password))                     // Checking password
 				{
 					$log->Write("Someone modify the Java Client Side and used this password {$password}");
 					$output->sendError(array($arrPost[1]=>2));
@@ -140,7 +152,11 @@
 					$output->sendError(array($arrPost[2]=>2));
 				}
 
-				if($user->verify($email) == -1)                        // Checking if the account doesnt exist
+				// Make the user object
+				$user = new User($db,$email);
+
+				// Checking if the account doesnt exist
+				if($user->verify() == -1)
 				{
 					$user->add($email,$password,$name);                                                         // Register account
 

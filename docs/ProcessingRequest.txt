@@ -1,0 +1,46 @@
+class ProcessingPOST:
+	/**
+	 * Construct
+	 *
+	 * @param LogF $log
+	 * @param Output $output
+	 * 
+	 */
+	public function __construct(LogF $log, Output $output)
+
+
+	/**
+	 * Verify some fields of `$_POST`/`$_GET` if exists and their are not empty
+	 *
+	 * @param string|array $fields             An array with the fields or a string with a field
+	 * @param ?array $dontCheckforEmpty        An array with exceptions for verify emptiness
+	 * @param int $type					       0 = $_POST,	1 = $_GET
+	 * 
+	 * @return array|int                       An array or a value like this (`1`=ok, `0`=is empty, `-1`=doesnt exist, `-2`=wtf exception(we got an empty key))
+	 * 
+	 */
+	public function check(string|array $fields,array $dontCheckforEmpty=null, int $type=0) : array|int
+
+
+	/**
+	 * Will encode some fields of `$_POST`/`$_GET` to htmlspecialchar [More info on docs/Util.txt#protect]
+	 *
+	 * @param string|array $fields
+	 * @param int $type					0 = $_POST,	1 = $_GET
+	 * 
+	 * @return void
+	 * 
+	 */
+	public function protect(string|array $fields, int $type=0) : void
+
+
+	/**
+	 * Extract the fields from `$_POST`\`$_GET`
+	 *
+	 * @param array $fields
+	 * @param int $type					0 = $_POST,	1 = $_GET
+	 * 
+	 * @return array|false
+	 * 
+	 */
+	public function extractFields(array $fields, int $type=0) : array|false
