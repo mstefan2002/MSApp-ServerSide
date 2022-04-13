@@ -3,6 +3,8 @@ class CVar
 {
 	public static string $saltVerifyCode 	= "";                                 //the salt used for email verification hashCode
 	public static string $saltDeleteCode 	= "";                                 //the salt used for delete account hashCode
+	
+	public static string $tokenApi          = "";                                 //accept request only if the token is gived
 
 	public static string $SQLHost 		= "";                                 //the hostname of database
 	public static string $SQLDB 		= "";                                 //the name of database
