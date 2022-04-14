@@ -22,7 +22,7 @@ class CVar
 	public static string $LogDefault 	= "Logs.env";                         //default log address
 	public static string $LogOutput 	= "LogOutput.env";                    //log address for output
 	public static string $LogQuery	 	= "LogQuery.env";                     //log address for query
-	public static string $LogProcPOST	= "LogProcessingPOST.env";            //log address for ProcessingPOST
+	public static string $LogProcReq	= "LogProcessingPOST.env";            //log address for ProcessingPOST
 	public static string $LogMailer		= "LogMail.env";                      //log address for Mail
 	public static string $LogVerify         = "LogVerify.env";                    //log address for Verify page
 }
