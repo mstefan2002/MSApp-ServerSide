@@ -75,5 +75,20 @@ class Output
 		header("HTTP/1.0 403 Not Allowed");
 		exit();
 	}
+
+	//TO DO
+	/**
+	 * Send html response for verify page
+	 *
+	 * @param string $html
+	 * 
+	 * @return void
+	 * 
+	 */
+	public function sendHtmlResponse(string $html) : void
+	{
+		echo $html;
+		exit();
+	}
 }
 ?>

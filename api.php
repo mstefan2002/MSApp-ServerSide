@@ -158,10 +158,10 @@
 				// Checking if the account doesnt exist
 				if($user->verify() == -1)
 				{
-					$user->add($email,$password,$name);                                                         // Register account
+					$user->add($password,$name);                                                                // Register account
 
 					list($verifyUrl,$deleteUrl) = EmailVerify::add($db,$email);                                 // Get verify url and delete url and insert them into database
-					list($body,$altbody) = Lang::getMailMessage($email,$verifyUrl,$deleteUrl);                  // Get message for the mail
+					list($body,$altbody) = Messages::getMailMessage($email,$verifyUrl,$deleteUrl);                  // Get message for the mail
 
 					$mail = new Mailer(new LogF(CVar::$LogMailer),new PHPMailer\PHPMailer\PHPMailer(true));     // Create the mailer object
 					$mail->addAddress($email);                                                                  // Add the address to the mailer									

@@ -35,8 +35,8 @@ class EmailVerify
 				);
 
 		$urls = [];
-		$urls[] = $path."verify.php?email={$email}&deleteCode={$hashCodes[0]}";
-		$urls[] = $path."verify.php?email={$email}&verifyCode={$hashCodes[1]}";
+		$urls[] = $path."verify.php?email={$email}&verifyCode={$hashCodes[0]}";
+		$urls[] = $path."verify.php?email={$email}&deleteCode={$hashCodes[1]}";
 
 		return $urls;
 	}

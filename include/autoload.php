@@ -16,6 +16,6 @@
 	require_once("include/ProcessingRequest.php");
 	require_once("include/Output.php");
 	require_once("include/Database.php");
-	require_once("include/Lang.php");
+	require_once("include/Messages.php");
 	require_once("include/EmailVerify.php");
 ?>

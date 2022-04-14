@@ -1,5 +1,5 @@
 <?php 
-class Lang
+class Messages
 {
 	/**
 	 * Create 2 messages for email verification, one for html type and one for text type
@@ -24,5 +24,69 @@ class Lang
 			 "\n\n\nWelcome to MySocialsApp!\nThe MSApp Team\n\n\n\n".
 			 "Did you receive this email without signing up? Click here: {$deleteUrl} . This verification link will expire in 24 hours.";
 		return $arr;
+	}
+
+	
+	/**
+	 * Create a message for invalid parms at verify Page
+	 *
+	 * @return string         html type
+	 * 
+	 */
+	public static function getVerifyInvalidMessage() : string
+	{
+		$str = "<html><body><b>Uh oh. We've run into a problem. Please try again later</b>";
+		return $str;
+	}
+
+	/**
+	 * Create a message for invalid email
+	 *
+	 * @return string         html type
+	 * 
+	 */
+	public static function getInvalidMailMessage() : string
+	{
+		$str = "<html><body><b><b>Email is not valid</b>";
+		return $str;
+	}
+
+
+	/**
+	 * Create a message for invalid hash
+	 *
+	 * @return string         html type
+	 * 
+	 */
+	public static function getInvalidHashMessage() : string
+	{
+		$str = "<html><body><b>The link is not valid</b>";
+		return $str;
+	}
+
+
+	/**
+	 * Create a message for successful account validation
+	 *
+	 * @return string         html type
+	 * 
+	 */
+	public static function getSuccessValidationMessage() : string
+	{
+		$str = "<html><body><b>You verified the account!</b>";
+		return $str;
+	}
+
+
+	/**
+	 * Create a message for successful account deletion
+	 *
+	 * @return string         html type
+	 * 
+	 */
+	public static function getSuccessDeleteMessage() : string
+	{
+		$str = "<html><body><b>We deleted the account!</b>";
+		return $str;
 	}
 }

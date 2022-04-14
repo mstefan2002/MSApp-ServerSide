@@ -1,8 +1,9 @@
 <?php 
 
 	/*
+	* TODO:
 	* Success = redirect back to app
-	* Fail    = show 403 error(todo template with messages)
+	* Fail    = show 403 error/template with messages
 	*/
 	// Loading classes
 	require_once("include/autoload.php");
@@ -44,12 +45,12 @@
 
 	if(!Util::validMail($email))                                    // Checking email
 	{
-		$output->sendHtmlError();
+		$output->sendHtmlResponse(Messages::getInvalidMailMessage());
 	}
 	if($type == 1 && !Util::validHash256($deleteCode)		        // Checking hashes
 	|| $type == 0 && !Util::validHash256($verifyCode))                   								
 	{
-		$output->sendHtmlError();
+		$output->sendHtmlResponse(Messages::getInvalidHashMessage());
 	}
 
 	$hash = "";
@@ -68,11 +69,20 @@
 			$user = new User($db,$email);
 			EmailVerify::remove($db,$email);
 			if($type == 0)
+			{
 				$user->setValidate();
+				$output->sendHtmlResponse(Messages::getSuccessValidationMessage());
+			}
 			else
 			{
 				$user->remove();
+				$output->sendHtmlResponse(Messages::getSuccessDeleteMessage());
 			}
+			break;
+		}
+		default:
+		{
+			$output->sendHtmlResponse(Messages::getVerifyInvalidMessage());
 			break;
 		}
 	}
