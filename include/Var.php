@@ -24,5 +24,6 @@ class CVar
 	public static string $LogQuery	 	= "LogQuery.env";                     //log address for query
 	public static string $LogProcPOST	= "LogProcessingPOST.env";            //log address for ProcessingPOST
 	public static string $LogMailer		= "LogMail.env";                      //log address for Mail
+	public static string $LogVerify         = "LogVerify.env";                    //log address for Verify page
 }
 ?>
