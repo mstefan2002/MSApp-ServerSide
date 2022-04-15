@@ -42,10 +42,10 @@ class Database
 	 * @param string|null $condition   The condition for UPDATE query
 	 * @param array|null $parms        An array with values of `$arr` and `$condition`
 	 * 
-	 * @return mysqli_result|false
+	 * @return mysqli_result|bool
 	 * 
 	 */
-	public function update(string $location, array $arr, ?string $condition, ?array $parms) : mysqli_result|false
+	public function update(string $location, array $arr, ?string $condition, ?array $parms) : mysqli_result|bool
 	{
 		$this->checkString(__METHOD__,  array(0=>"location",1=>$location),  1);     // [ERROR] Location cant be empty
 		$this->checkArray (__METHOD__,  array(0=>"arr",1=>$arr),            1);     // [ERROR] Array of keys=>values cant be empty
@@ -118,10 +118,10 @@ class Database
 	 * @param array $arr               An array with `column name`=>(`value` `[not recommended]`,`?` (then you parse the value to $parms)`[recommended]`,`null` (the same procedure as ?))
 	 * @param array|null $parms        An array with values of `$arr`
 	 * 
-	 * @return mysqli_result|false
+	 * @return mysqli_result|bool
 	 * 
 	 */
-	public function insert(string $location, array $arr, ?array $parms) : mysqli_result|false
+	public function insert(string $location, array $arr, ?array $parms) : mysqli_result|bool
 	{
 		$this->checkString(__METHOD__, array(0=>"location",1=>$location), 1);   // [ERROR] Location cant be empty
 		$this->checkArray (__METHOD__, array(0=>"arr",1=>$arr),           1);   // [ERROR] Array of keys=>values cant be empty
@@ -209,10 +209,10 @@ class Database
 	 * @param string|null $other        Other parms like order/join/etc
 	 * @param array|null $parms         An array with values of `$select` , `$condition` and `$other`
 	 * 
-	 * @return mysqli_result|false
+	 * @return mysqli_result|bool
 	 * 
 	 */
-	public function select(?string $select,string $location,?string $condition,?string $other,?array $parms) : mysqli_result|false
+	public function select(?string $select,string $location,?string $condition,?string $other,?array $parms) : mysqli_result|bool
 	{
 		$this->checkString(__METHOD__,	array(0=>"location",1=>$location),	1);   // [ERROR] Location cant be empty
 
@@ -239,10 +239,10 @@ class Database
 	 * @param string|null $condition    The condition for DELETE query
 	 * @param array|null $parms         An array with values of `$condition`
 	 * 
-	 * @return mysqli_result|false
+	 * @return mysqli_result|bool
 	 * 
 	 */
-	public function delete(string $location, ?string $condition, ?array $parms) : mysqli_result|false
+	public function delete(string $location, ?string $condition, ?array $parms) : mysqli_result|bool
 	{
 		$this->checkString(__METHOD__,	array(0=>"location",1=>$location),	1); 	// [ERROR] Location cant be empty
 
@@ -313,13 +313,13 @@ class Database
 	 *
 	 * @param string $query
 	 * 
-	 * @return mysqli_result|false
+	 * @return mysqli_result|bool
 	 * 
 	 */
-	public function query(string $query) : mysqli_result|false
+	public function query(string $query) : mysqli_result|bool
 	{
 		$this->checkString(__METHOD__,	array(0=>"query",1=>$query),	1); 	// [ERROR] Query cant be empty	
-
+		$this->LogQuery->Write($query);
 		$result = $this->mysqli->query($query);
 		if ($result == false)
 		{
@@ -335,10 +335,10 @@ class Database
 	 * @param string $query
 	 * @param array $parms
 	 * 
-	 * @return mysqli_result|false
+	 * @return mysqli_result|bool
 	 * 
 	 */
-	public function cQuery(string $query, array $parms) : mysqli_result|false
+	public function cQuery(string $query, array $parms) : mysqli_result|bool
 	{
 		$this->checkString(__METHOD__,  array(0=>"query",1=>$query),    1);     // [ERROR] Query cant be empty
 		$this->checkArray (__METHOD__,  array(0=>"parms",1=>$parms),    0);     // [INFO]  If we get empty array we should use query instead of cQuery

@@ -1,0 +1,38 @@
+<?php 
+
+	require_once("include/autoload.php");
+
+	$log = new LogF(CVar::$LogBgProc);
+	$output = new Output(new LogF(CVar::$LogOutput), null);
+
+	$ip = Util::getUserIP();
+	if($ip != CVar::$IP_BgAPI)
+	{
+		$log->Write("{$ip} tried to access the page.");
+		$output->sendHtmlError();
+	}
+
+	$temp = new Temper();
+	if(!$temp->checkTimer("nextBackgroundCall"))
+	{
+		$log->Write("Server tried to load the page but the next timer is not ready.");
+		$output->sendHtmlError();
+	}
+	// Connect to the database
+	$db = new Database($log,new LogF(CVar::$LogQuery),$output);
+
+
+	if($temp->checkTimer("checkExpired"))
+	{
+		$temp->setTimer("checkExpired",CVar::$TimerCheckExpired);
+		$arr = [];
+		$arr = EmailVerify::checkExpired($db,null);
+		if(count($arr) > 0)
+		{
+			foreach($arr as $email)
+			{
+				$log->Write("We find an account that doesnt have verification and the time run out: { email:{$email} }, we delete it.");
+				Deleter::all($db,$email);
+			}
+		}
+	}

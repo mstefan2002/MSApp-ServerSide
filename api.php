@@ -10,7 +10,7 @@
 	require_once("include/autoload.php");
 
 	// Make the output object
-	$output = new Output(new LogF(CVar::$LogOutput));
+	$output = new Output(new LogF(CVar::$LogOutput), new Temper());
 
 	// Make the main log address
 	$log = new LogF();
@@ -71,12 +71,12 @@
 			{
 				$fieldsPost = $pRequest->extractFields($arrPost);   // Extract the fields from $_POST
 				extract($fieldsPost);                               // Turn fields to variable
-				if(!Util::validMail($email))                        // Checking mail
+				if(!Validator::mail($email))                        // Checking mail
 				{
 					$log->Write("Someone modify the Java Client Side and used this email {$email}");
 					$output->sendError(array($arrPost[0]=>2));
 				}
-				if(!Util::validHash256($password))                  // Checking password
+				if(!Validator::hash256($password))                  // Checking password
 				{
 					$log->Write("Someone modify the Java Client Side and used this password {$password}");
 					$output->sendError(array($arrPost[1]=>2));
@@ -136,17 +136,17 @@
 			{
 				$fieldsPost = $pRequest->extractFields($arrPost);      // Extract the fields from $_POST
 				extract($fieldsPost);                                  // Turn fields to variable
-				if(!Util::validMail($email))                           // Checking email
+				if(!Validator::mail($email))                           // Checking email
 				{
 					$log->Write("Someone modify the Java Client Side and used this email {$email}");
 					$output->sendError(array($arrPost[0]=>2));
 				}
-				if(!Util::validHash256($password))                     // Checking password
+				if(!Validator::hash256($password))                     // Checking password
 				{
 					$log->Write("Someone modify the Java Client Side and used this password {$password}");
 					$output->sendError(array($arrPost[1]=>2));
 				}
-				if(!Util::validName($name))                            // Checking name
+				if(!Validator::name($name))                            // Checking name
 				{
 					$log->Write("Someone modify the Java Client Side and used this name {$name}");
 					$output->sendError(array($arrPost[2]=>2));

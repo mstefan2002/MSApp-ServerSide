@@ -3,16 +3,19 @@ class Output
 {
 	private array $arr = [];
 	private LogF $log;
+	private ?Temper $temp;
 
 	/**
 	 * Construct
 	 *
 	 * @param LogF $log
+	 * @param Temper|null $temp
 	 * 
 	 */
-	public function __construct(LogF $log)
+	public function __construct(LogF $log, ?Temper $temp)
 	{
 		$this->log = $log;
+		$this->temp = $temp;
 	}
 
 	/**
@@ -47,6 +50,8 @@ class Output
 			$this->log->Write("[".__METHOD__."][E] The Output(array) is empty");
 		else
 			echo Util::getJson($this->arr);
+
+		$this->callBackground();
 		exit();
 	}
 
@@ -73,6 +78,7 @@ class Output
 	public function sendHtmlError() : void
 	{
 		header("HTTP/1.0 403 Not Allowed");
+		$this->callBackground();
 		exit();
 	}
 
@@ -88,7 +94,35 @@ class Output
 	public function sendHtmlResponse(string $html) : void
 	{
 		echo $html;
+		$this->callBackground();
 		exit();
+	}
+
+	/**
+	 * Call the background task(we use this until we buy a server)
+	 *
+	 * @return void
+	 * 
+	 */
+	private function callBackground() : void
+	{
+		if(!is_null($this->temp) && $this->temp->checkTimer("nextBackgroundCall"))
+		{
+			$arr = parse_url(CVar::$PathToMSApp);
+			$fp = fsockopen($arr["host"], 80, $errno, $errstr, 1);
+			if (!$fp)
+			{
+				$this->log->Write("We got en error when we tried to connect to localhost/bg : {$errstr} ({$errno})");
+			}
+			else
+			{
+				$out = "GET {$arr['path']}background.php HTTP/1.1\r\n";
+				$out .= "Host: {$arr['host']}\r\n";
+				$out .= "Connection: Close\r\n\r\n";
+				fwrite($fp, $out);
+				fclose($fp);
+			}
+		}
 	}
 }
 ?>

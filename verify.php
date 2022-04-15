@@ -9,7 +9,7 @@
 	require_once("include/autoload.php");
 
 	// Make the output object
-	$output = new Output(new LogF(CVar::$LogOutput));
+	$output = new Output(new LogF(CVar::$LogOutput), new Temper());
 
 	// Make the main log address
 	$log = new LogF(CVar::$LogVerify);
@@ -43,12 +43,12 @@
 	$fieldsGET = $pRequest->extractFields($arrGet,1);               // Extract the fields from $_GET
 	extract($fieldsGET);                                            // Turn fields to variable
 
-	if(!Util::validMail($email))                                    // Checking email
+	if(!Validator::mail($email))                                    // Checking email
 	{
 		$output->sendHtmlResponse(Messages::getInvalidMailMessage());
 	}
-	if($type == 1 && !Util::validHash256($deleteCode)		        // Checking hashes
-	|| $type == 0 && !Util::validHash256($verifyCode))                   								
+	if($type == 1 && !Validator::hash256($deleteCode)		        // Checking hashes
+	|| $type == 0 && !Validator::hash256($verifyCode))                   								
 	{
 		$output->sendHtmlResponse(Messages::getInvalidHashMessage());
 	}
@@ -67,15 +67,16 @@
 		case 1:		// hash matches
 		{
 			$user = new User($db,$email);
-			EmailVerify::remove($db,$email);
-			if($type == 0)
+
+			if($type == 0)  // Verify
 			{
 				$user->setValidate();
+				Deleter::emailVerification($db,$email);
 				$output->sendHtmlResponse(Messages::getSuccessValidationMessage());
 			}
-			else
+			else            // Delete
 			{
-				$user->remove();
+				Deleter::all($db,$email);
 				$output->sendHtmlResponse(Messages::getSuccessDeleteMessage());
 			}
 			break;

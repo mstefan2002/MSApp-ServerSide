@@ -12,6 +12,7 @@ class LogF
 	 */
 	public function __construct(string $filename="")
 	{
+		Util::mkdirIDE("Logs");
 		if(!is_writable("Logs"))
 			error_log("The dir Logs is not writable", 0);
 		else

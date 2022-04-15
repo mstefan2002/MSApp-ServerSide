@@ -32,10 +32,10 @@ class Database:
                 *                                 Above code is equal with this query(with protection for sql injection):
                 *                                 UPDATE `accounts` SET `tag`='new_tag',`name`='New Name' WHERE `id`=5
                 * 
-                * @return mysqli_result|false
+                * @return mysqli_result|bool
                 * 
                 */
-                public function update(string $location, array $arr, ?string $condition, ?array $parms) : mysqli_result|false
+                public function update(string $location, array $arr, ?string $condition, ?array $parms) : mysqli_result|bool
 
 
 
@@ -57,10 +57,10 @@ class Database:
                 *                                 Above code is equal with this query(with protection for sql injection):
                 *                                 INSERT INTO `accounts` (`tag`,`name`) VALUES('new_tag','New Name')
                 *
-                * @return mysqli_result|false
+                * @return mysqli_result|bool
                 * 
                 */
-                public function insert(string $location, array $arr, ?array $parms) : mysqli_result|false
+                public function insert(string $location, array $arr, ?array $parms) : mysqli_result|bool
 
 
 
@@ -83,10 +83,10 @@ class Database:
                 *                                  Above code is equal with this query(with protection for sql injection):
                 *                                  SELECT * FROM `accounts` WHERE `id`='5'
                 * 
-                * @return mysqli_result|false
+                * @return mysqli_result|bool
                 * 
                 */
-                public function select(?string $select,string $location,?string $condition,?string $other,?array $parms) : mysqli_result|false
+                public function select(?string $select,string $location,?string $condition,?string $other,?array $parms) : mysqli_result|bool
 
 
                 /**
@@ -103,10 +103,10 @@ class Database:
                 *                                  Above code is equal with this query(with protection for sql injection):
                 *                                  DELETE FROM `accounts` WHERE `id`='5'
                 * 
-                * @return mysqli_result|false
+                * @return mysqli_result|bool
                 * 
                 */
-                public function delete(string $location, ?string $condition, ?array $parms) : mysqli_result|false
+                public function delete(string $location, ?string $condition, ?array $parms) : mysqli_result|bool
 
 
                 /**
@@ -114,10 +114,10 @@ class Database:
                 *
                 * @param string $query
                 * 
-                * @return mysqli_result|false
+                * @return mysqli_result|bool
                 * 
                 */
-                public function query(string $query) : mysqli_result|false
+                public function query(string $query) : mysqli_result|bool
 
 
 
@@ -127,10 +127,10 @@ class Database:
                 * @param string $query
                 * @param array $parms
                 * 
-                * @return mysqli_result|false
+                * @return mysqli_result|bool
                 * 
                 */
-                public function cQuery(string $query, array $parms) : mysqli_result|false
+                public function cQuery(string $query, array $parms) : mysqli_result|bool
 
 
 

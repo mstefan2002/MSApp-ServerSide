@@ -18,4 +18,7 @@
 	require_once("include/Database.php");
 	require_once("include/Messages.php");
 	require_once("include/EmailVerify.php");
+	require_once("include/Deleter.php");
+	require_once("include/Temper.php");
+	require_once("include/Validator.php");
 ?>
