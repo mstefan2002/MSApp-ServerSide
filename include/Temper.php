@@ -12,31 +12,34 @@ class Temper
 	 */
 	public function __construct(string $filename="")
 	{
+		
 		Util::mkdirIDE("Temp");
 		if(!is_writable("Temp"))
 			error_log("The dir Temp is not writable", 0);
 		else
 		{
 			if(empty($filename))
+			{
 				$filename = CVar::$TempDefault;
+			}
 
 			$file = "./Temp/{$filename}";
 			$this->filename = $file;
 
-            if(!file_exists($file))
-            {
-                if(!fopen($file, "a+"))
-                {
-                    error_log("Cannot open file ({$file})", 0);
-                    exit();
-                }
-            }
-            else
-            {
-                $content = file_get_contents($file);
-                if(!empty($content))
-                    $this->arr = json_decode(file_get_contents($file),true);
-            }
+			if(!file_exists($file))
+			{
+				if(!fopen($file, "a+"))
+				{
+					error_log("Cannot open file ({$file})", 0);
+					exit();
+				}
+			}
+			else
+			{
+				$content = file_get_contents($file);
+				if(!empty($content))
+					$this->arr = json_decode(file_get_contents($file),true);
+			}
 		}
 	}
 
