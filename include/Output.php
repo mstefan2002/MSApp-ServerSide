@@ -2,22 +2,34 @@
 class Output
 {
 	private array $arr = [];
-	private LogF $log;
+	private Log $log;
 	private ?Temper $temp;
 
 	/**
 	 * Construct
 	 *
-	 * @param LogF $log
+	 * @param Log $log
 	 * @param Temper|null $temp
 	 * 
 	 */
-	public function __construct(LogF $log, ?Temper $temp)
+	public function __construct(Log $log, ?Temper $temp)
 	{
 		$this->log = $log;
 		$this->temp = $temp;
 	}
 
+	/**
+	 * Change log type
+	 *
+	 * @param Log $log
+	 * 
+	 * @return void
+	 * 
+	 */
+	public function changeLog(Log $log) : void
+	{
+		$this->log = $log;
+	}
 	/**
 	 * Add array to output
 	 *
@@ -108,7 +120,7 @@ class Output
 	{
 		if(!is_null($this->temp) && $this->temp->checkTimer("nextBackgroundCall"))
 		{
-			$arr = parse_url(CVar::$PathToMSApp);
+			$arr = parse_url(Config::$PathToMSApp);
 			$fp = fsockopen($arr["host"], 80, $errno, $errstr, 1);
 			if (!$fp)
 			{

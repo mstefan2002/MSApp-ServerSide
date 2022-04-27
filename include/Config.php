@@ -1,8 +1,9 @@
 <?php
-class CVar
+class Config
 {
 	public static string $saltVerifyCode    = "";                                 //the salt used for email verification hashCode
 	public static string $saltDeleteCode    = "";                                 //the salt used for delete account hashCode
+	public static string $saltSessionCode   = "";                                 //the salt used for session hashCode
 	
 	public static string $tokenApi          = "";                                 //accept request only if the token is gived
 
@@ -21,16 +22,20 @@ class CVar
 
 	public static string $PathToMSApp       = "";                                 //API Location
 
-	public static string $LogDefault        = "Logs.env";                         //default log address
-	public static string $LogOutput         = "LogOutput.env";                    //log address for output
-	public static string $LogQuery          = "LogQuery.env";                     //log address for query
-	public static string $LogProcReq        = "LogProcessingPOST.env";            //log address for ProcessingPOST
-	public static string $LogMailer         = "LogMail.env";                      //log address for Mail
-	public static string $LogVerify         = "LogVerify.env";                    //log address for Verify page
-	public static string $LogBgProc         = "LogBackground.env";                //log address for BG page
+	public static string $LogDefault        = "Logs";                             //default log address
+	public static string $LogOutput         = "LogOutput";                        //log address for output
+	public static string $LogQuery          = "LogQuery";                         //log address for query
+	public static string $LogProcReq        = "LogProcessingPOST";                //log address for ProcessingPOST
+	public static string $LogMailer         = "LogMail";                          //log address for Mail
+	public static string $LogVerify         = "LogVerify";                        //log address for Verify page
+	public static string $LogBgProc         = "LogBackground";                    //log address for BG page
 
 	public static string $TempDefault       = "ServerTemp.json";                  //temp address
 
-	public static int    $TimerCheckExpired = 60;                                 //Interval of time to check expired email verification
+	public static int    $SessionLife       = 30;                                 //Interval of days for the life of the session
+
+	public static int    $TimerEmailVerify  = 60;                                 //Interval of time to check expired email verification
+	public static int    $TimerSession      = 60;                                 //Interval of time to check expired email verification
+
 }
 ?>

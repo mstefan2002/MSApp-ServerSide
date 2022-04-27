@@ -10,25 +10,28 @@
 	require_once("include/autoload.php");
 
 	// Make the output object
-	$output = new Output(new LogF(CVar::$LogOutput), new Temper());
+	$output = new Output(new LogF(Config::$LogOutput), new Temper());
 
-	// Make the main log address
-	$log = new LogF();
+	// Connect to the database
+	$db = new Database(new LogF(),$output);
+
+	// Change the log of output to db
+	$output->changeLog(new LogD($db,Config::$LogOutput));
 
 	// We make a processing object to process the $_POST's
-	$pRequest = new ProcessingRequest(new LogF(CVar::$LogProcReq), $output);
+	$pRequest = new ProcessingRequest(new LogD($db,Config::$LogProcReq), $output);
 
 	// Check if the token exist and is valid
 	if($pRequest->check("token") != 1)
 	{	$output->sendError("Token doesn't exist!");	}
-	elseif(!hash_equals($_POST["token"],CVar::$tokenApi))
+	elseif(!hash_equals($_POST["token"],Config::$tokenApi))
 	{
 		$output->add("type",-2);
 		$output->send();
 	}
 
-	// Connect to the database
-	$db = new Database($log,new LogF(CVar::$LogQuery),$output);
+	// Make the main log address
+	$log = new LogD($db);
 
 	// Check if is any type of request
 	if($pRequest->check("type") != 1)
@@ -73,12 +76,12 @@
 				extract($fieldsPost);                               // Turn fields to variable
 				if(!Validator::mail($email))                        // Checking mail
 				{
-					$log->Write("Someone modify the Java Client Side and used this email {$email}");
+					$log->Write("[null][i] Someone modify the Java Client Side and used this email {$email}");
 					$output->sendError(array($arrPost[0]=>2));
 				}
 				if(!Validator::hash256($password))                  // Checking password
 				{
-					$log->Write("Someone modify the Java Client Side and used this password {$password}");
+					$log->Write("[null][i] Someone modify the Java Client Side and used this password {$password}");
 					$output->sendError(array($arrPost[1]=>2));
 				}
 
@@ -90,13 +93,17 @@
 				{
 					case 2:	// wtf exception(multiple acc with the same email)
 					{
-						$LogsF->Write("We find many accounts with this email {$email}");
+						$log->Write("[null][i] We find many accounts with this email {$email}");
 						$output->sendError(array($arrPost[0]=>4));
 						break;
 					}
 					case 1: // everything is ok
 					{
+						// we create a session
+						$sessionID = Session::createSession($db,$email);
+
 						$output->add("type",1);
+						$output->add("session",$sessionID);
 						$output->send();
 						break;
 					}
@@ -138,17 +145,17 @@
 				extract($fieldsPost);                                  // Turn fields to variable
 				if(!Validator::mail($email))                           // Checking email
 				{
-					$log->Write("Someone modify the Java Client Side and used this email {$email}");
+					$log->Write("[null][i] Someone modify the Java Client Side and used this email {$email}");
 					$output->sendError(array($arrPost[0]=>2));
 				}
 				if(!Validator::hash256($password))                     // Checking password
 				{
-					$log->Write("Someone modify the Java Client Side and used this password {$password}");
+					$log->Write("[null][i] Someone modify the Java Client Side and used this password {$password}");
 					$output->sendError(array($arrPost[1]=>2));
 				}
 				if(!Validator::name($name))                            // Checking name
 				{
-					$log->Write("Someone modify the Java Client Side and used this name {$name}");
+					$log->Write("[null][i] Someone modify the Java Client Side and used this name {$name}");
 					$output->sendError(array($arrPost[2]=>2));
 				}
 
@@ -158,18 +165,27 @@
 				// Checking if the account doesnt exist
 				if($user->verify() == -1)
 				{
-					$user->add($password,$name);                                                                // Register account
+					$db->start_transaction();
 
-					list($verifyUrl,$deleteUrl) = EmailVerify::add($db,$email);                                 // Get verify url and delete url and insert them into database
+					$user->add($password,$name);                                                                    // Register account
+
+					list($verifyUrl,$deleteUrl) = EmailVerify::add($db,$email);                                     // Get verify url and delete url and insert them into database
 					list($body,$altbody) = Messages::getMailMessage($email,$verifyUrl,$deleteUrl);                  // Get message for the mail
 
-					$mail = new Mailer(new LogF(CVar::$LogMailer),new PHPMailer\PHPMailer\PHPMailer(true));     // Create the mailer object
-					$mail->addAddress($email);                                                                  // Add the address to the mailer									
-					$mail->content("Confirm your email address",$body,$altbody);                                // Put the title and the messages to the mailer
-					$mail->send();                                                                              // Send the mail
+					$sessionID = Session::createSession($db,$email);                                                // Create the session
 
-					$output->add("type",1);                                                                     // Everything is ok
-					$output->send();                                                                            // Send the response to the Client Side
+					$db->end_transaction();
+
+					$mail = new Mailer(new LogD($db,Config::$LogMailer),new PHPMailer\PHPMailer\PHPMailer(true));   // Create the mailer object
+					$mail->addAddress($email);                                                                      // Add the address to the mailer									
+					$mail->content("Confirm your email address",$body,$altbody);                                    // Put the title and the messages to the mailer
+					$mail->send();                                                                                  // Send the mail
+
+					$output->add("type",1);
+					$output->add("session",$sessionID);
+
+					// Send the response to the Client Side                                                                     
+					$output->send();                                                                            
 				}
 				$output->sendError(array($arrPost[0]=>3));             // Account exist so we output error
 			}

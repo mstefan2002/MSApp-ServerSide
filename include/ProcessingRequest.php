@@ -1,17 +1,17 @@
 <?php 
 class ProcessingRequest
 {
-	private LogF $log;
+	private Log $log;
 	private Output $output;
 	
 	/**
 	 * Construct
 	 *
-	 * @param LogF $log
+	 * @param Log $log
 	 * @param Output $output
 	 * 
 	 */
-	public function __construct(LogF $log, Output $output)
+	public function __construct(Log $log, Output $output)
 	{
 		$this->log = $log;
 		$this->output = $output;

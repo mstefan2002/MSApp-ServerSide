@@ -3,7 +3,6 @@ class Database
 {
 	private mysqli $mysqli;
 	private LogF $Log;
-	private LogF $LogQuery;
 	private Output $OutPut;
 	private ?mysqli_stmt $stmt = null;
 
@@ -11,20 +10,18 @@ class Database
 	 * Construction
 	 * 
 	 * @param LogF $log
-	 * @param LogF $logQuery
 	 * @param Output $output
 	 * 
 	 */
-	public function __construct(LogF $log, LogF $logQuery, Output $output)
+	public function __construct(LogF $log, Output $output)
 	{
 		$this->Log = $log;
-		$this->LogQuery = $logQuery;
 		$this->OutPut = $output;
 
-		$host = CVar::$SQLHost;
-		$user = CVar::$SQLUser;
-		$pass = CVar::$SQLPassword;
-		$db = CVar::$SQLDB;
+		$host = Config::$SQLHost;
+		$user = Config::$SQLUser;
+		$pass = Config::$SQLPassword;
+		$db = Config::$SQLDB;
 
 		$this->mysqli = new mysqli($host, $user, $pass, $db);
 
@@ -266,6 +263,9 @@ class Database
 	private function setFail(string $string) : void
 	{
 		$this->Log->Write($string);
+		if($this->usingTransaction == true)
+			$this->rollBack();
+
 		$this->OutPut->sendError("Internal problems");
 	}
 	/**
@@ -319,9 +319,8 @@ class Database
 	public function query(string $query) : mysqli_result|bool
 	{
 		$this->checkString(__METHOD__,	array(0=>"query",1=>$query),	1); 	// [ERROR] Query cant be empty	
-		$this->LogQuery->Write($query);
 		$result = $this->mysqli->query($query);
-		if ($result == false)
+		if ($result === false)
 		{
 			$this->setFail("[".__METHOD__."][E] We got an error : {$this->mysqli->error}");
 			return false;
@@ -377,7 +376,6 @@ class Database
 	 */
 	private function prepare(string $query) : void
 	{
-		$this->LogQuery->Write($query);
 		if(!($this->stmt->prepare($query)))
 			$this->setFail("[".__METHOD__."][E] We got an error: {$this->stmt->error}");
 	}
@@ -400,8 +398,6 @@ class Database
 		$jsonParms = Util::getJson($parms);
 		if(!($this->stmt->bind_param($type, ...$parms)))
 			$this->setFail("[".__METHOD__."][E] We got an error for stmt->bind_param({$type}, {$jsonParms}), the error: {$this->stmt->error}");
-
-		$this->LogQuery->Write("bind_parm: {$jsonParms}");
 	}
 
 	/**
@@ -420,7 +416,6 @@ class Database
 		{
 			$this->setFail("[".__METHOD__."][E] We got an error: {$e->getMessage()}");
 		}
-		$this->LogQuery->Write("");
 	}
 
 	/**
@@ -445,6 +440,35 @@ class Database
 		return $this->stmt->insert_id;
 	}
 
+	/**
+	 * Start a transaction
+	 *
+	 * @return void
+	 * 
+	 */
+	public function start_transaction() : void
+	{
+		$this->mysqli->begin_transaction();
+		$this->usingTransaction = true;
+	}
+
+	/**
+	 * Close a transaction
+	 *
+	 * @return void
+	 * 
+	 */
+	public function end_transaction() : void
+	{
+		$this->mysqli->commit();
+		$this->usingTransaction = false;
+	}
+
+	public function rollBack() : void
+	{
+		$this->mysqli->rollback();
+		$this->usingTransaction = false;
+	}
 	/**
 	 * Destruct
 	 */

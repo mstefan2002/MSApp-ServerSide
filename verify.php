@@ -9,13 +9,16 @@
 	require_once("include/autoload.php");
 
 	// Make the output object
-	$output = new Output(new LogF(CVar::$LogOutput), new Temper());
+	$output = new Output(new LogF(Config::$LogOutput), new Temper());
 
-	// Make the main log address
-	$log = new LogF(CVar::$LogVerify);
+	// Connect to the database
+	$db = new Database(new LogF(Config::$LogVerify),$output);
+
+	// Change the log of output to db
+	$output->changeLog(new LogD($db,Config::$LogOutput));
 
 	// We make a processing object to process the $_GET's
-	$pRequest = new ProcessingRequest(new LogF(CVar::$LogProcReq), $output);
+	$pRequest = new ProcessingRequest(new LogD($db,Config::$LogProcReq), $output);
 
 	// Check if the parms email and verifyCode/deleteCode exist
 	$responseDelete = $pRequest->check("deleteCode",null,1);
@@ -59,8 +62,7 @@
 	else
 		$hash = $deleteCode;
 
-	// Connect to the database
-	$db = new Database($log,new LogF(CVar::$LogQuery),$output);
+
 
 	switch(EmailVerify::verify($db,$email,$hash,$type))
 	{
@@ -70,8 +72,13 @@
 
 			if($type == 0)  // Verify
 			{
+				$db->start_transaction();
+
 				$user->setValidate();
 				Deleter::emailVerification($db,$email);
+				
+				$db->end_transaction();
+
 				$output->sendHtmlResponse(Messages::getSuccessValidationMessage());
 			}
 			else            // Delete

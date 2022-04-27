@@ -1,17 +1,17 @@
 <?php 
 class Mailer
 {
-	private LogF $log;
+	private Log $log;
 	private PHPMailer\PHPMailer\PHPMailer $mail;
 
 	/**
 	 * Construct
 	 *
-	 * @param LogF $pLog
+	 * @param Log $pLog
 	 * @param PHPMailer\PHPMailer\PHPMailer $pMail
 	 * 
 	 */
-	public function __construct(LogF $pLog, PHPMailer\PHPMailer\PHPMailer $pMail)
+	public function __construct(Log $pLog, PHPMailer\PHPMailer\PHPMailer $pMail)
 	{
 		$this->log = $pLog;
 		$this->mail = $pMail;
@@ -19,15 +19,15 @@ class Mailer
 		{
 			$this->mail->SMTPDebug = false;
 			$this->mail->isSMTP();
-			$this->mail->Host       = CVar::$SMTPHost;
+			$this->mail->Host       = Config::$SMTPHost;
 			$this->mail->SMTPAuth   = true;
-			$this->mail->Username   = CVar::$SMTPUser;
-			$this->mail->Password   = CVar::$SMTPPass;
+			$this->mail->Username   = Config::$SMTPUser;
+			$this->mail->Password   = Config::$SMTPPass;
 			$this->mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
-			$this->mail->Port       = CVar::$SMTPPort;
+			$this->mail->Port       = Config::$SMTPPort;
 
-			$this->mail->setFrom(CVar::$SMTPUser, CVar::$SMTPName);
-			$this->mail->addReplyTo(CVar::$SMTPUser, CVar::$SMTPName);
+			$this->mail->setFrom(Config::$SMTPUser, Config::$SMTPName);
+			$this->mail->addReplyTo(Config::$SMTPUser, Config::$SMTPName);
 
 			$this->mail->isHTML(true);
 		}

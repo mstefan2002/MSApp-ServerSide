@@ -7,7 +7,7 @@ class Temper
 	/**
 	 * Construct
 	 *
-	 * @param string $filename       The name of the temper, the `default` value you can find at Var.php->$TempDefault
+	 * @param string $filename       The name of the temper, the `default` value you can find at Config.php->$TempDefault
 	 * 
 	 */
 	public function __construct(string $filename="")
@@ -20,7 +20,7 @@ class Temper
 		{
 			if(empty($filename))
 			{
-				$filename = CVar::$TempDefault;
+				$filename = Config::$TempDefault;
 			}
 
 			$file = "./Temp/{$filename}";
@@ -38,7 +38,7 @@ class Temper
 			{
 				$content = file_get_contents($file);
 				if(!empty($content))
-					$this->arr = json_decode(file_get_contents($file),true);
+					$this->arr = json_decode($content,true);
 			}
 		}
 	}

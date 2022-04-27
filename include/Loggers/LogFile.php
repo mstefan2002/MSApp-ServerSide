@@ -1,5 +1,5 @@
 <?php
-class LogF
+class LogF implements Log // Not safe for simultaneous access
 {
 	private $file=null;
 	private string $filename;
@@ -7,7 +7,7 @@ class LogF
 	/**
 	 * Construct
 	 *
-	 * @param string $filename       The name of the file, the `default` value you can find at Var.php->$LogDefault
+	 * @param string $filename       The name of the file, the `default` value you can find at Config.php->$LogDefault
 	 * 
 	 */
 	public function __construct(string $filename="")
@@ -18,8 +18,9 @@ class LogF
 		else
 		{
 			if(empty($filename))
-				$filename = CVar::$LogDefault;
-
+				$filename = Config::$LogDefault;
+				
+			$filename .= ".env";
 			$file = "./Logs/{$filename}";
 			$this->filename = $file;
 			if(!$this->file = fopen($file, "a+"))
@@ -51,7 +52,7 @@ class LogF
 	/**
 	 * Destruct
 	 */
-	private function __destruct()
+	public function __destruct()
 	{
 		if(!is_null($this->file))
 			fclose($this->file);

@@ -11,17 +11,17 @@ class EmailVerify
 	 */
 	public static function add(Database $db,string $email) : array
 	{
-		$saltVerify = CVar::$saltVerifyCode;
-		$saltDelete = CVar::$saltDeleteCode;
-		$path	    = CVar::$PathToMSApp;
+		$saltVerify = Config::$saltVerifyCode;
+		$saltDelete = Config::$saltDeleteCode;
+		$path	    = Config::$PathToMSApp;
 		$table	    = Tables::EmailVerification(true);
 		$hashCodes  = [];
 
 		$number = (string)random_int(1000, 9999);
-		$hashCodes[] = hash("sha256","{$number}{$saltVerify}",false);
+		$hashCodes[] = hash("sha256","{$number}{$saltVerify}{$email}{$number}",false);
 
 		$number = (string)random_int(1000, 9999);
-		$hashCodes[] = hash("sha256","{$number}{$saltDelete}",false);
+		$hashCodes[] = hash("sha256","{$number}{$saltDelete}{$email}{$number}",false);
 
 
 		$fieldEmail = $table->email;
@@ -31,7 +31,7 @@ class EmailVerify
 		$db->insert(
 					Tables::EmailVerification(false),
 					array($fieldEmail,$fieldVerifyCode=>$hashCodes[0],$fieldDeleteCode=>$hashCodes[1]),
-					array($email)
+					array($email     )
 				);
 
 		$urls = [];
@@ -44,7 +44,9 @@ class EmailVerify
 	/**
 	 * Verify if the hash exist in email verification
 	 *
+	 * @param Database $db
 	 * @param string $email
+	 * @param string $hash
 	 * @param int $type            `0`=verify,      `1`=delete
 	 * 
 	 * @return int                 `2`  =wtf exception(many rows with the email), `1`=hash match, `0`=hash doesnt match, 

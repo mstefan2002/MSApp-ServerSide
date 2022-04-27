@@ -30,6 +30,28 @@ class Tables
 		return "email_verification";
 	}
 
+	/**
+	 * Sessions table
+	 *
+	 * @param bool $value
+	 * 
+	 * @return string|Sessions_Rows
+	 * 
+	 */
+	public static function Sessions(bool $value) : string|Sessions_Rows
+	{
+		if($value)
+			return new Sessions_Rows();
+		return "sessions";
+	}
+
+	public static function Logs(bool $value) : string|Logs_Rows
+	{
+		if($value)
+			return new Logs_Rows();
+			
+		return Config::$LogDefault;
+	}
 }
 class Accounts_Rows
 {
@@ -64,7 +86,7 @@ class Accounts_Rows
 
 
 	/**
-	 * Not NULL        |
+	 * NULL            |
 	 * Type: VARCHAR(MaxLen: 16)
 	 *
 	 * @var string
@@ -142,5 +164,95 @@ class EmailVerify_Rows
 	 */
 	public string $created		=		"created";
 }
+class Sessions_Rows
+{
+	/**
+	 * Primary Key        |
+	 * Auto Increment     |
+	 * Not NULL           |
+	 * Type: INT(MaxLen: 11)
+	 *
+	 * @var string
+	 */
+	public string $id           =       "id";
 
+
+	/**
+	 * Unique Key        |
+	 * Not NULL          |
+	 * Type: VARCHAR(MaxLen: 255)
+	 *
+	 * @var string
+	 */
+	public string $email        =       "email";
+
+
+	/**
+	 * Encode Type: SHA256    |
+	 * Not NULL               |
+	 * Type: VARCHAR(MaxLen: 64)
+	 *
+	 * @var string
+	 */
+	public string $hash 	    =		"hash";
+
+	/**
+	 * Default: CURRENT_TIMESTAMP        |
+	 * Not NULL                          |
+	 * Type: TIMESTAMP
+	 *
+	 * @var string
+	 */
+	public string $lastUsed		=		"lastUsed";
+}
+
+class Logs_Rows
+{
+	/**
+	 * Primary Key        |
+	 * Auto Increment     |
+	 * Not NULL           |
+	 * Type: INT(MaxLen: 11)
+	 *
+	 * @var string
+	 */
+	public string $id           =       "id";
+
+
+	/**
+	 * Not NULL
+	 * Type: VARCHAR(MaxLen: 16)
+	 *
+	 * @var string
+	 */
+	public string $type         =       "type";
+
+	/**
+	 * NULL
+	 * Type: CHAR(MaxLen: 1)
+	 *
+	 * @var string
+	 */
+	public string $typeLog      =       "typeLog";
+
+	/**
+	 * NULL
+	 * Type: VARCHAR(MaxLen: 64)
+	 *
+	 * @var string
+	 */
+	public string $method       =       "method";
+
+
+	/**
+	 * Not NULL
+	 * Type: VARCHAR(MaxLen: 255)
+	 *
+	 * @var string
+	 */
+	public string $message      =       "message";
+
+	
+	
+}
 ?>

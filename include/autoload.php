@@ -7,12 +7,15 @@
 	require_once("include/PHPMailer/Exception.php");
 	require_once("include/PHPMailer/PHPMailer.php");
 	require_once("include/PHPMailer/SMTP.php");
-	require_once("include/Var.php");
+	require_once("include/Config.php");
 	require_once("include/Util.php");
+	require_once("include/Session.php");
 	require_once("include/Mailer.php");
 	require_once("include/Tables.php");
 	require_once("include/User.php");
-	require_once("include/Log.php");
+	require_once("include/Loggers/Log.php");
+	require_once("include/Loggers/LogFile.php");
+	require_once("include/Loggers/LogDB.php");
 	require_once("include/ProcessingRequest.php");
 	require_once("include/Output.php");
 	require_once("include/Database.php");
