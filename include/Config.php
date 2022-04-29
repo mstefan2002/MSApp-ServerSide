@@ -34,8 +34,10 @@ class Config
 
 	public static int    $SessionLife       = 30;                                 //Interval of days for the life of the session
 
-	public static int    $TimerEmailVerify  = 60;                                 //Interval of time to check expired email verification
-	public static int    $TimerSession      = 60;                                 //Interval of time to check expired email verification
+	public static int    $MailResend        = 30;                                 //Seconds to wait for reseding email
+
+	public static int    $TimerEmailVerify  = 60;                                 //Interval of seconds to check expired email verification
+	public static int    $TimerSession      = 60;                                 //Interval of seconds to check expired sessions
 
 }
 ?>

@@ -106,6 +106,41 @@ class User
 	}
 
 	/**
+	 * Check if the account have email validation
+	 * 
+	 * @return int                 `2`=wtf exception(many accounts with that email), `1`=is validated, `0`=is not validated, 
+	 *                             `-1`=the account doesnt exist
+	 * 
+	 */
+	public function getValidation() : int
+	{
+		$table = Tables::Accounts(true);
+		$fieldEmail = $table->email;
+		$fieldVerify = $table->emailVerify;
+
+		$result = $this->db->select(
+										"`{$fieldVerify}`",             // select
+										Tables::Accounts(false),        // location
+										"`{$fieldEmail}`=?",            // condition
+										null,                           // others
+										array($this->email)             // parms
+				    				);
+
+		if(isset($result->num_rows) && $result->num_rows > 0)
+		{
+			if($result->num_rows > 1)
+			{
+				return 2;
+			}
+
+			$row = $result->fetch_array(MYSQLI_ASSOC);
+			return $row[$fieldVerify];
+		}
+		return -1;
+	}
+
+
+	/**
 	 * Delete the account
 	 *
 	 * @return void

@@ -163,6 +163,15 @@ class EmailVerify_Rows
 	 * @var string
 	 */
 	public string $created		=		"created";
+
+	/**
+	 * Default: CURRENT_TIMESTAMP        |
+	 * Not NULL                          |
+	 * Type: TIMESTAMP
+	 *
+	 * @var string
+	 */
+	public string $lastMailSend	=		"lastMailSend";
 }
 class Sessions_Rows
 {

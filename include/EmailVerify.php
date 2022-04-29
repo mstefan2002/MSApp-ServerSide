@@ -51,21 +51,23 @@ class EmailVerify
 	 * 
 	 * @return int                 `2`  =wtf exception(many rows with the email), `1`=hash match, `0`=hash doesnt match, 
 	 *                             `-1` =email doesnt have any verification
+	 * @return array               `0`=verify,      `1`=delete
 	 * 
 	 */
-	public static function verify(Database $db, string $email, string $hash, int $type=0) : int
+	public static function verify(Database $db, string $email, string $hash="", int $type=0) : int|array
 	{
 		$table	    = Tables::EmailVerification(true);
 		$fieldEmail = $table->email;
 		$fieldVerifyCode = $table->verifyCode;
 		$fieldDeleteCode = $table->deleteCode;
+		$fieldLastMailSend = $table->lastMailSend;
 
 		$result = $db->select(
-			"`{$fieldVerifyCode}`,`{$fieldDeleteCode}`",                  // select
-			Tables::EmailVerification(false),                             // location
-			"`{$fieldEmail}`=?",                                          // condition
-			null,                                                         // others
-			array($email)                                                 // parms
+			"`{$fieldVerifyCode}`,`{$fieldDeleteCode}`,`{$fieldLastMailSend}`",                  // select
+			Tables::EmailVerification(false),                                                    // location
+			"`{$fieldEmail}`=?",                                                                 // condition
+			null,                                                                                // others
+			array($email)                                                                        // parms
 		);
 
 		if(isset($result->num_rows) && $result->num_rows > 0)
@@ -76,6 +78,10 @@ class EmailVerify
 			}
 
 			$row = $result->fetch_array(MYSQLI_ASSOC);
+			if(empty($hash))
+			{
+				return array($row[$fieldVerifyCode],$row[$fieldDeleteCode],$row[$fieldLastMailSend]);
+			}
 			if($type == 0 && hash_equals($row[$fieldVerifyCode],$hash)||$type == 1 && hash_equals($row[$fieldDeleteCode],$hash))
 			{
 				return 1;
@@ -106,6 +112,29 @@ class EmailVerify
 		);
 	}
 
+
+	/**
+	 * Update the timestamp of the last mail sended
+	 *
+	 * @param Database $db
+	 * @param string $email
+	 * 
+	 * @return void
+	 * 
+	 */
+	public static function updateMailSend(Database $db, string $email) : void
+	{
+		$table = Tables::EmailVerification(true);
+		$fieldEmail = $table->email;
+		$fieldLastMailSend = $table->lastMailSend;
+	
+		$db->update(
+			Tables::EmailVerification(false),
+			array($fieldLastMailSend=>date("Y-m-d H:i:s")),
+			"`{$fieldEmail}`=?",
+			array($email)
+		);
+	}
 
 	/**
 	 * Check if the email is expired
