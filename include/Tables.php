@@ -60,8 +60,6 @@ class Accounts_Rows
 	 * Auto Increment  |
 	 * Not NULL        |
 	 * Type: INT(MaxLen: 11)
-	 *
-	 * @var string
 	 */
 	public string $id           =       "id";
 
@@ -70,8 +68,6 @@ class Accounts_Rows
 	 * Unique Key      |
 	 * Not NULL        |
 	 * Type: VARCHAR(MaxLen: 255)
-	 *
-	 * @var string
 	 */
 	public string $email        =       "email";
 
@@ -79,8 +75,6 @@ class Accounts_Rows
 	/**
 	 * Not NULL        |
 	 * Type: VARCHAR(MaxLen: 64)
-	 *
-	 * @var string
 	 */
 	public string $name         =       "fullname";
 
@@ -88,8 +82,6 @@ class Accounts_Rows
 	/**
 	 * NULL            |
 	 * Type: VARCHAR(MaxLen: 16)
-	 *
-	 * @var string
 	 */
 	public string $tag          =       "tag";
 
@@ -98,8 +90,6 @@ class Accounts_Rows
 	 * Encode Type: SHA256   |
 	 * Not NULL              | 
 	 * Type: VARCHAR(MaxLen: 64)
-	 *
-	 * @var string
 	 */
 	public string $password     =       "password";
 
@@ -107,8 +97,6 @@ class Accounts_Rows
 	/**
 	 * NULL        |
 	 * Type: INT(MaxLen: 1)
-	 *
-	 * @var string
 	 */
 	public string $emailVerify  =       "email_verify";
 }
@@ -119,8 +107,6 @@ class EmailVerify_Rows
 	 * Auto Increment     |
 	 * Not NULL           |
 	 * Type: INT(MaxLen: 11)
-	 *
-	 * @var string
 	 */
 	public string $id           =       "id";
 
@@ -129,8 +115,6 @@ class EmailVerify_Rows
 	 * Unique Key        |
 	 * Not NULL          |
 	 * Type: VARCHAR(MaxLen: 255)
-	 *
-	 * @var string
 	 */
 	public string $email        =       "email";
 
@@ -139,8 +123,6 @@ class EmailVerify_Rows
 	 * Encode Type: SHA256    |
 	 * Not NULL               |
 	 * Type: VARCHAR(MaxLen: 64)
-	 *
-	 * @var string
 	 */
 	public string $verifyCode 	=		"verifyCode";
 
@@ -149,8 +131,6 @@ class EmailVerify_Rows
 	 * Encode Type: SHA256    |
 	 * Not NULL               |
 	 * Type: VARCHAR(MaxLen: 64)
-	 *
-	 * @var string
 	 */
 	public string $deleteCode	=		"deleteCode";
 
@@ -159,8 +139,6 @@ class EmailVerify_Rows
 	 * Default: CURRENT_TIMESTAMP        |
 	 * Not NULL                          |
 	 * Type: TIMESTAMP
-	 *
-	 * @var string
 	 */
 	public string $created		=		"created";
 
@@ -168,8 +146,6 @@ class EmailVerify_Rows
 	 * Default: CURRENT_TIMESTAMP        |
 	 * Not NULL                          |
 	 * Type: TIMESTAMP
-	 *
-	 * @var string
 	 */
 	public string $lastMailSend	=		"lastMailSend";
 }
@@ -180,8 +156,6 @@ class Sessions_Rows
 	 * Auto Increment     |
 	 * Not NULL           |
 	 * Type: INT(MaxLen: 11)
-	 *
-	 * @var string
 	 */
 	public string $id           =       "id";
 
@@ -190,8 +164,6 @@ class Sessions_Rows
 	 * Unique Key        |
 	 * Not NULL          |
 	 * Type: VARCHAR(MaxLen: 255)
-	 *
-	 * @var string
 	 */
 	public string $email        =       "email";
 
@@ -200,8 +172,6 @@ class Sessions_Rows
 	 * Encode Type: SHA256    |
 	 * Not NULL               |
 	 * Type: VARCHAR(MaxLen: 64)
-	 *
-	 * @var string
 	 */
 	public string $hash 	    =		"hash";
 
@@ -209,8 +179,6 @@ class Sessions_Rows
 	 * Default: CURRENT_TIMESTAMP        |
 	 * Not NULL                          |
 	 * Type: TIMESTAMP
-	 *
-	 * @var string
 	 */
 	public string $lastUsed		=		"lastUsed";
 }
@@ -222,46 +190,41 @@ class Logs_Rows
 	 * Auto Increment     |
 	 * Not NULL           |
 	 * Type: INT(MaxLen: 11)
-	 *
-	 * @var string
 	 */
 	public string $id           =       "id";
 
 
 	/**
-	 * Not NULL
+	 * Not NULL           |
 	 * Type: VARCHAR(MaxLen: 16)
-	 *
-	 * @var string
 	 */
 	public string $type         =       "type";
 
 	/**
-	 * NULL
+	 * NULL               |
 	 * Type: CHAR(MaxLen: 1)
-	 *
-	 * @var string
 	 */
 	public string $typeLog      =       "typeLog";
 
 	/**
-	 * NULL
+	 * NULL               |
 	 * Type: VARCHAR(MaxLen: 64)
-	 *
-	 * @var string
 	 */
 	public string $method       =       "method";
 
 
 	/**
-	 * Not NULL
+	 * Not NULL           |
 	 * Type: VARCHAR(MaxLen: 255)
-	 *
-	 * @var string
 	 */
 	public string $message      =       "message";
 
 	
-	
+	/**
+	 * Default: CURRENT_TIMESTAMP        |
+	 * Not NULL                          |
+	 * Type: TIMESTAMP
+	 */
+	public string $created		=		"created";
 }
 ?>

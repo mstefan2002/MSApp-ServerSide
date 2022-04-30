@@ -171,7 +171,8 @@
 
 					$user->add($password,$name);                                                                    // Register account
 
-					list($verifyUrl,$deleteUrl) = EmailVerify::add($db,$email);                                     // Get verify url and delete url and insert them into database
+					$arr = EmailVerify::add($db,$email);                                                            // Get verify and delete hash and insert them into database
+					list($verifyUrl,$deleteUrl) = EmailVerify::hashesToUrls($email,$arr);                           // Get verify and delete url
 					list($body,$altbody) = Messages::getMailMessage($email,$verifyUrl,$deleteUrl);                  // Get message for the mail
 
 					$sessionID = Session::createSession($db,$email);                                                // Create the session
@@ -245,9 +246,10 @@
 
 						if(is_array($arr))
 						{
-							list($verifyUrl,$deleteUrl,$lastMailSended) = $arr;
+							list($verifyHash,$deleteHash,$lastMailSended) = $arr;
 							if(strtotime($lastMailSended) + Config::$MailResend     <    time())
 							{
+								list($verifyUrl,$deleteUrl) = EmailVerify::hashesToUrls($email,array($verifyHash,$deleteHash)); // Get verify and delete url
 								list($body,$altbody) = Messages::getMailMessage($email,$verifyUrl,$deleteUrl);                  // Get message for the mail
 
 								$mail = new Mailer(new LogD($db,Config::$LogMailer),new PHPMailer\PHPMailer\PHPMailer(true));   // Create the mailer object

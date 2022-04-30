@@ -20,7 +20,7 @@ class Config
 	public static int    $SMTPPort          = 465;                                //The port of SMTP(you can find it at cpanel->mail->connect devices)
 	public static string $SMTPName          = "No Reply";                         //the name of the mail
 
-	public static string $PathToMSApp       = "";                                 //API Location
+	public static string $PathToMSApp       = "https://localhost/";               //API Location
 
 	public static string $LogDefault        = "Logs";                             //default log address
 	public static string $LogOutput         = "LogOutput";                        //log address for output

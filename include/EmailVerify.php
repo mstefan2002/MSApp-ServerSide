@@ -13,7 +13,7 @@ class EmailVerify
 	{
 		$saltVerify = Config::$saltVerifyCode;
 		$saltDelete = Config::$saltDeleteCode;
-		$path	    = Config::$PathToMSApp;
+
 		$table	    = Tables::EmailVerification(true);
 		$hashCodes  = [];
 
@@ -34,13 +34,28 @@ class EmailVerify
 					array($email     )
 				);
 
+		return $hashCodes;
+	}
+
+	/**
+	 * Create urls for verify and delete
+	 *
+	 * @param string $email
+	 * @param array $arr       `0` = verify,   `1` = delete
+	 * 
+	 * @return array
+	 * 
+	 */
+	public static function hashesToUrls(string $email, array $arr) : array
+	{
+		$path	    = Config::$PathToMSApp;
+
 		$urls = [];
-		$urls[] = $path."verify.php?email={$email}&verifyCode={$hashCodes[0]}";
-		$urls[] = $path."verify.php?email={$email}&deleteCode={$hashCodes[1]}";
+		$urls[] = $path."verify.php?email={$email}&verifyCode={$arr[0]}";
+		$urls[] = $path."verify.php?email={$email}&deleteCode={$arr[1]}";
 
 		return $urls;
 	}
-
 	/**
 	 * Verify if the hash exist in email verification
 	 *

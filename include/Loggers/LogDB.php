@@ -25,6 +25,7 @@ class LogD implements Log
 		$fieldTypeLog = $table->typeLog;
 		$fieldMethod = $table->method;
 		$fieldMessage = $table->message;
+		$fieldTime = $table->created;
 
 		$this->db->query(
 							"CREATE TABLE IF NOT EXISTS `{$tableName}` (".
@@ -32,7 +33,8 @@ class LogD implements Log
 								"`{$fieldType}`    varchar(16)  NOT NULL,".
 								"`{$fieldTypeLog}` char(1)      NULL,". 
 								"`{$fieldMethod}`  varchar(64)  NULL,". 
-								"`{$fieldMessage}` varchar(255) NOT NULL". 
+								"`{$fieldMessage}` varchar(255) NOT NULL,". 
+								"`{$fieldTime}`    timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP".
 							")ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
 						);
 		
