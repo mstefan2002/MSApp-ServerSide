@@ -123,7 +123,7 @@ class User
 			if(empty($password))
 				return -2;
 
-			if(hash_equals($result[$fieldPassword],$password))
+			if(password_verify($password,$result[$fieldPassword]))
 				return 1;
 
 			return 0;
@@ -144,10 +144,13 @@ class User
 		$fieldPassword = $table->password;
 		$fieldName = $table->name;
 
+
+		$passwordEncrypted = password_hash($password,PASSWORD_DEFAULT);
+
 		$this->db->insert(
 					Tables::Accounts(false),
 					array($fieldEmail,$fieldPassword,$fieldName),
-					array($this->email,$password,$name)
+					array($this->email,$passwordEncrypted,$name)
 				);
 	}
 
@@ -184,25 +187,17 @@ class User
 		$fieldEmail = $table->email;
 		$fieldVerify = $table->emailVerify;
 
-		$result = $this->db->select(
+		$result = $this->select(
 										"`{$fieldVerify}`",             // select
-										Tables::Accounts(false),        // location
 										"`{$fieldEmail}`=?",            // condition
 										null,                           // others
 										array($this->email)             // parms
 				    				);
 
-		if(isset($result->num_rows) && $result->num_rows > 0)
-		{
-			if($result->num_rows > 1)
-			{
-				return 2;
-			}
+		if(is_array($result))
+			return $result[$fieldVerify];
 
-			$row = $result->fetch_array(MYSQLI_ASSOC);
-			return $row[$fieldVerify];
-		}
-		return -1;
+		return $result;
 	}
 
 

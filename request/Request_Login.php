@@ -40,7 +40,7 @@ class Login implements Request_Type
 				$log->Write("[null][i] Someone modify the Java Client Side and used this email {$email}");
 				$output->sendError(array($arrPost[0]=>2));
 			}
-			if(!Validator::hash256($password))                  // Checking password
+			if(!Validator::password($password))                 // Checking password
 			{
 				$log->Write("[null][i] Someone modify the Java Client Side and used this password {$password}");
 				$output->sendError(array($arrPost[1]=>2));

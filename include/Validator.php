@@ -34,6 +34,21 @@ class Validator
 	}
 
 	/**
+	 * Check if the len of password is higher then 5 
+	 *
+	 * @param string $email
+	 * 
+	 * @return bool
+	 * 
+	 */
+	public static function password(string $password) : bool
+	{
+		if(strlen($password) < 6)
+			return false;
+
+		return true;
+	}
+	/**
 	 * Check if the name is valid(len is `higher then 2` and `lower then 65` and all the chars is like `A-Za-z` or `space`[not all])
 	 *
 	 * @param string $name

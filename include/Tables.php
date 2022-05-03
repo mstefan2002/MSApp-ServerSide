@@ -88,9 +88,9 @@ class Accounts_Rows
 
 
 	/**
-	 * Encode Type: SHA256   |
-	 * Not NULL              | 
-	 * Type: VARCHAR(MaxLen: 64)
+	 * Encode Type: PASSWORD_DEFAULT(PHP)   |
+	 * Not NULL                             | 
+	 * Type: VARCHAR(MaxLen: 255)
 	 */
 	public string $password     =       "password";
 
