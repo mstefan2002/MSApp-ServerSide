@@ -24,4 +24,5 @@
 	require_once("include/Deleter.php");
 	require_once("include/Temper.php");
 	require_once("include/Validator.php");
+	require_once("request/Request.php");
 ?>
