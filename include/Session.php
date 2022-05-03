@@ -75,7 +75,7 @@ class Session
 		$db->start_transaction();
 		self::remove($db,$email);
 
-		$saltSession = Config::$saltSessionCode;
+		$saltSession = random_bytes(16);
 		$table       = Tables::Sessions(true);
 		$fieldEmail  = $table->email;
 		$fieldHash   = $table->hash;

@@ -1,13 +1,9 @@
 <?php
 class Config
 {
-	public static string $saltVerifyCode    = "";                                 //the salt used for email verification hashCode
-	public static string $saltDeleteCode    = "";                                 //the salt used for delete account hashCode
-	public static string $saltSessionCode   = "";                                 //the salt used for session hashCode
-	
-	public static string $tokenApi          = "";                                 //accept request only if the token is gived
+	public static string $tokenApi          = "";                                 //accept request only if the token is gived(for updates mobile app)
 
-	public static string $IP_BgAPI          = "";                                 //accept only the ip of the webhost
+	public static string $IP_BgAPI          = "";                                 //accept only the ip of the webhost on background script
 
 	public static string $SQLHost           = "";                                 //the hostname of database
 	public static string $SQLDB             = "";                                 //the name of database

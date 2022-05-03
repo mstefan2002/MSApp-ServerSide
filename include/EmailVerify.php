@@ -11,8 +11,8 @@ class EmailVerify
 	 */
 	public static function add(Database $db,string $email) : array
 	{
-		$saltVerify = Config::$saltVerifyCode;
-		$saltDelete = Config::$saltDeleteCode;
+		$saltVerify = random_bytes(16);
+		$saltDelete = random_bytes(16);
 
 		$table	    = Tables::EmailVerification(true);
 		$hashCodes  = [];
