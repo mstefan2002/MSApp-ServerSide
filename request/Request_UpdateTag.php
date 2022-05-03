@@ -67,6 +67,7 @@ class UpdateTag implements Request_Type
 				{
 					case 1:
 					{
+						Session::increaseTime($db,$email);
 						if($user->verifyTag($tag) == 0)
 						{
 							// Allow the script to run even if we get error 1062(MYSQLI_CODE_DUPLICATE_KEY)

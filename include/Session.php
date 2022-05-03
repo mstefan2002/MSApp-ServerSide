@@ -45,7 +45,31 @@ class Session
 	}
 
 	/**
+	 * Increase the life time of the session
+	 *
+	 * @param Database $db
+	 * @param string $email
+	 * 
+	 */
+	public static function increaseTime(Database $db,string $email) : void
+	{
+		$table	    = Tables::Sessions(true);
+		$fieldEmail = $table->email;
+		$fieldLastUsed = $table->lastUsed;
+
+		$db->update(
+							Tables::Sessions(false),
+							array($fieldLastUsed=>date("Y-m-d H:i:s")),
+							"`{$fieldEmail}`=?",
+							array($email)
+		);
+	}
+
+	/**
 	 * Delete the session
+	 * 
+	 * @param Database $db
+	 * @param string $email
 	 *
 	 * @return void
 	 * 
@@ -66,8 +90,10 @@ class Session
 	/**
 	 * Register new account
 	 *
-	 * @param string $password
-	 * @param string $name
+	 * @param Database $db
+	 * @param string $email
+	 * 
+	 * @return string            will return the `sessionID`
 	 * 
 	 */
 	public static function createSession(Database $db,string $email) : string
