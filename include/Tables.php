@@ -80,6 +80,7 @@ class Accounts_Rows
 
 
 	/**
+	 * Unique Key      |
 	 * NULL            |
 	 * Type: VARCHAR(MaxLen: 16)
 	 */

@@ -5,6 +5,9 @@ class Database
 	private LogF $Log;
 	private Output $OutPut;
 	private ?mysqli_stmt $stmt = null;
+	private ?array $avoidCode=null;
+	private int $countQuery=0;
+	private bool $usingTransaction=false;
 
 	/**
 	 * Construction
@@ -22,11 +25,14 @@ class Database
 		$user = Config::$SQLUser;
 		$pass = Config::$SQLPassword;
 		$db = Config::$SQLDB;
-
-		$this->mysqli = new mysqli($host, $user, $pass, $db);
-
-		if($this->mysqli->connect_error)
-			$this->setFail("[".__METHOD__."] We cant connect to the database, the error: \"{$this->mysqli->connect_error}\"");	
+		try
+		{
+			$this->mysqli = new mysqli($host, $user, $pass, $db);
+		}
+		catch(mysqli_sql_exception $e)
+		{
+			$this->setFail("[".__METHOD__."][E] We cant connect to the database, the error: {$e->getMessage()}[{$e->getCode()}]");
+		}
 	}
 
 	/** 
@@ -308,6 +314,22 @@ class Database
 				$this->setFail("[{$methodName}][E] We got an empty array for {$str[0]}");
 		}
 	}
+
+	/**
+	 * Prevents the script from shutting down when the following errors are found in trycatch
+	 *
+	 * @param array $avoidCode    If we trycatch an error that is in this array the script will continue run
+	 * @param int $countQuery          The number of query we prevent
+	 * 
+	 * @return void
+	 * 
+	 */
+	public function catchErrorCode(array $avoidCode, int $countQuery=1) : void
+	{
+		$this->avoidCode = $avoidCode;
+		$this->countQuery = $countQuery;
+	}
+
 	/**
 	 * Execute a SQL Query
 	 *
@@ -319,12 +341,22 @@ class Database
 	public function query(string $query) : mysqli_result|bool
 	{
 		$this->checkString(__METHOD__,	array(0=>"query",1=>$query),	1); 	// [ERROR] Query cant be empty	
-		$result = $this->mysqli->query($query);
-		if ($result === false)
+		try
 		{
-			$this->setFail("[".__METHOD__."][E] We got an error : {$this->mysqli->error}");
-			return false;
+			$result = $this->mysqli->query($query);
 		}
+		catch(mysqli_sql_exception $e)
+		{
+			if($this->countQuery >0 && !is_null($this->avoidCode) && array_search($e->getCode(),$this->avoidCode) !== false)
+			{
+				--$this->countQuery;
+				return false;
+			}
+			else
+				$this->setFail("[".__METHOD__."][E] We got an error: {$e->getMessage()}[{$e->getCode()}]\nFor this query: {$query}");
+		}
+		if($this->countQuery > 0)
+			--$this->countQuery;
 		return $result;
 
 	}
@@ -342,80 +374,38 @@ class Database
 		$this->checkString(__METHOD__,  array(0=>"query",1=>$query),    1);     // [ERROR] Query cant be empty
 		$this->checkArray (__METHOD__,  array(0=>"parms",1=>$parms),    0);     // [INFO]  If we get empty array we should use query instead of cQuery
 
-		$this->stmtInit();
-		$this->prepare($query);
-		$this->bind_param($parms);
-		$this->execute();
-		return $this->get_result();
-	}
-
-	/**
-	 * Initializes a mysqli statement
-	 *
-	 * @return void
-	 * 
-	 */
-	private function stmtInit() : void
-	{
-		if(!is_null($this->stmt))
-		{
-			$this->stmt->close();
-			unset($this->stmt);
-		}
-		if(!($this->stmt = $this->mysqli->stmt_init()))
-			$this->setFail("[".__METHOD__."][E] We got an error: {$this->stmt->error}");
-	}
-
-	/**
-	 * Prepare the query to statement
-	 *
-	 * @param string $query
-	 * 
-	 * @return void
-	 * 
-	 */
-	private function prepare(string $query) : void
-	{
-		if(!($this->stmt->prepare($query)))
-			$this->setFail("[".__METHOD__."][E] We got an error: {$this->stmt->error}");
-	}
-
-	/**
-	 * Parse the parameters to statement
-	 *
-	 * @param array $parms
-	 * 
-	 * @return void
-	 * 
-	 */
-	private function bind_param(array $parms) : void
-	{
 		$type = "";
 		foreach ($parms as $key=>$value)
 		{
 			$type.=gettype($value)[0];
 		}
 		$jsonParms = Util::getJson($parms);
-		if(!($this->stmt->bind_param($type, ...$parms)))
-			$this->setFail("[".__METHOD__."][E] We got an error for stmt->bind_param({$type}, {$jsonParms}), the error: {$this->stmt->error}");
-	}
 
-	/**
-	 * Execute the statement
-	 *
-	 * @return void
-	 * 
-	 */
-	private function execute() : void
-	{
 		try
 		{
+			if(!is_null($this->stmt))
+			{
+				$this->stmt->close();
+				unset($this->stmt);
+			}
+			$this->stmt = $this->mysqli->stmt_init();
+			$this->stmt->prepare($query);
+			$this->stmt->bind_param($type, ...$parms);
 			$this->stmt->execute();
 		}
 		catch(mysqli_sql_exception $e)
 		{
-			$this->setFail("[".__METHOD__."][E] We got an error: {$e->getMessage()}");
+			if($this->countQuery >0 && !is_null($this->avoidCode) && array_search($e->getCode(),$this->avoidCode) !== false)
+			{
+				--$this->countQuery;
+				return false;
+			}
+			else
+				$this->setFail("[".__METHOD__."][E] We got an error: {$e->getMessage()}[{$e->getCode()}]\nstmt->bind_param({$type}, {$jsonParms})");
 		}
+		if($this->countQuery > 0)
+			--$this->countQuery;
+		return $this->get_result();
 	}
 
 	/**
@@ -427,6 +417,20 @@ class Database
 	public function get_result(): mysqli_result|false
 	{
 		return $this->stmt->get_result();
+	}
+
+	/**
+	 * Get error code from mysqli/statement
+	 *
+	 * @return int
+	 * 
+	 */
+	public function get_errorCode() : int
+	{
+		if(!is_null($this->stmt) && $this->stmt->errno != 0)
+			return $this->stmt->errno;
+			
+		return $this->mysqli->errno;
 	}
 
 	/**

@@ -3,13 +3,13 @@
 	/*
 	* type = 1 (success)
 	* type = 0 (error)
-	* type = -1 (undefined)[a type was gived but we didnt find a match]
-	* type = -2 (token is not valid)
+	* type = -1 (undefined)[a type was given, but we couldn't find a match]
+	* type = -2 (the token is invalid)
 	*/
 	// Loading classes
 	require_once("include/autoload.php");
 
-	// Make the output object
+	// Create the output object
 	$output = new Output(new LogF(Config::$LogOutput), new Temper());
 
 	// Connect to the database
@@ -18,10 +18,10 @@
 	// Change the log of output to db
 	$output->changeLog(new LogD($db,Config::$LogOutput));
 
-	// We make a processing object to process the $_POST's
+	// Create a processing object to process the $_POST's
 	$pRequest = new ProcessingRequest(new LogD($db,Config::$LogProcReq), $output);
 
-	// Check if the token exist and is valid
+	// Check if the token exists and is valid
 	if($pRequest->check("token") != 1)
 	{	$output->sendError("Token doesn't exist!");	}
 	elseif(!hash_equals($_POST["token"],Config::$tokenApi))
@@ -30,14 +30,14 @@
 		$output->send();
 	}
 
-	// Make the main log address
+	// Create the log object
 	$log = new LogD($db);
 
-	// Check if is any type of request
+	// Check for any type of request
 	if($pRequest->check("type") != 1)
 	{	$output->sendError("Type doesn't exist!");	}
 
-	$pRequest->protect("type");      // We encode $_POST['type'] to html special char
+	$pRequest->protect("type");     // We encode $_POST['type'] to html special char
 	$type = $_POST["type"];         // Transfer the value into $type
 
 	switch($type)
@@ -86,7 +86,7 @@
 					$output->sendError(array($arrPost[1]=>2));
 				}
 
-				// Make the user object
+				// Create the user object
 				$user = new User($db, $email);
 
 				// Checking the account
@@ -131,7 +131,6 @@
 				email:
 				{
 					3 = account exist
-					-3 = wtf exception(error insert sql)
 				}
 		Send success:
 			type=1
@@ -161,10 +160,10 @@
 					$output->sendError(array($arrPost[2]=>2));
 				}
 
-				// Make the user object
+				// Create the user object
 				$user = new User($db,$email);
 
-				// Checking if the account doesnt exist
+				// Check if the account does not exist
 				if($user->verify() == -1)
 				{
 					$db->start_transaction();
@@ -281,7 +280,7 @@
 						$output->sendError(array($emailField=>6));                 // The account is already verified so we output error
 						break;
 					}
-					case 2:
+					default: // case 2
 					{
 						$output->sendError(array($emailField=>-2));                // wtf exception(multiple rows)
 						break;
@@ -289,6 +288,111 @@
 				}
 			}
 			$output->sendError(array($emailField=>$response)); // We find some problems about one or many fields(empty/doesnt exist)
+			break;
+		}
+
+		/*
+		RECEIVED: email + sesID + tag
+		Send failure:
+			type=0
+			Stage 1:
+				email/sesID/tag:
+				{
+					2 = hackerman / editing the data
+					0 = empty
+					-1 = post doesn't exist
+					-2 = wtf exception(checkpost get empty key)
+				}
+			Stage 2:
+				email:
+				{
+					3 = account doesnt exist
+				}
+				sesID
+				{
+					4 = hash doesnt match
+					3 = session doesnt exist
+					-2 = wtf exception(many rows)
+				}
+				tag:
+				{
+					3 = the tag is taken
+				}
+		Send success:
+			type=1
+			session=id
+		*/
+		case "updateTag":
+		{
+			$arrPost = ["email","sesID","tag"];                        // Create an array with the fields of the received $_POST
+			$response = $pRequest->check($arrPost);                    // Verify them if they exist and they are not empty
+			if(count($response) == 0)                                  // If the response is an empty array then everything is ok
+			{
+				$fieldsPost = $pRequest->extractFields($arrPost);      // Extract the fields from $_POST
+				extract($fieldsPost);                                  // Turn fields to variable
+				if(!Validator::mail($email))                           // Checking email
+				{
+					$log->Write("[null][i] Someone modify the Java Client Side and used this email {$email}");
+					$output->sendError(array($arrPost[0]=>2));
+				}
+				if(!Validator::hash256($sesID))                        // Checking session id
+				{
+					$log->Write("[null][i] Someone modify the Java Client Side and used this sessionID {$sesID}");
+					$output->sendError(array($arrPost[1]=>2));
+				}
+				if(!Validator::tag($tag))                              // Checking tag
+				{
+					$log->Write("[null][i] Someone modify the Java Client Side and used this tag {$tag}");
+					$output->sendError(array($arrPost[2]=>2));
+				}
+
+				// Make the user object
+				$user = new User($db,$email);
+
+				// Check if the account exist
+				if($user->verify() == -2)
+				{
+					// Check if the session exist and match with received session
+					switch(Session::verify($db,$email,$sesID))
+					{
+						case 1:
+						{
+							if($user->verifyTag($tag) == 0)
+							{
+								// Allow the script to run even if we get error 1062(MYSQLI_CODE_DUPLICATE_KEY)
+								// Because the race condition may happend
+								$db->catchErrorCode(array(1062));
+								$user->setTag($tag);
+								if($db->get_errorCode() == 1062)
+									$output->sendError(array($arrPost[2]=>3));         // The tag is been taken by another user(race condition) so we output error
+
+								$output->add("type",1);                                                                  
+								$output->send();  
+							}
+							else
+								$output->sendError(array($arrPost[2]=>3));             // The tag is already taken so we output error
+							break;
+						}
+						case -1:
+						{
+							$output->sendError(array($arrPost[1]=>3));                 // The account doesnt have any session so we output error
+							break;
+						}
+						case 0:
+						{
+							$output->sendError(array($arrPost[1]=>4));                 // The sesID doesnt match with the sesID in the db so we output error
+							break;
+						}
+						default:  // case 2
+						{
+							$output->sendError(array($arrPost[1]=>-2));                // wtf exception(multiple rows)
+							break;
+						}
+					}
+				}
+				$output->sendError(array($arrPost[0]=>3));             // Account doesnt exist so we output error
+			}
+			$output->sendError($response); // We find some problems about one or many fields(empty/doesnt exist)
 			break;
 		}
 	}

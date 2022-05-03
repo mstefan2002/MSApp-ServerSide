@@ -20,6 +20,83 @@ class User
 	}
 
 	/**
+	 * Execute select query on accounts table
+	 *
+	 * @param string|null $fields
+	 * @param string|null $condition
+	 * @param string|null $other
+	 * @param array|null $parms
+	 * 
+	 * @return array|int
+	 * 
+	 */
+	private function select(?string $fields=null, ?string $condition=null, ?string $other=null, ?array $parms=null) : array|int
+	{
+		$result = $this->db->select(
+										$fields,                        // select
+										Tables::Accounts(false),        // location
+										$condition,                     // condition
+										$other,                         // others
+										$parms                          // parms
+				    				);
+
+		if(isset($result->num_rows) && $result->num_rows > 0)
+		{
+			if($result->num_rows > 1)
+				return 2;
+			return $result->fetch_array(MYSQLI_ASSOC);
+		}
+		return -1;
+	}
+
+	/**
+	 * Verify if an account exist with that tag
+	 *
+	 * @param string $tag
+	 * 
+	 * @return int                 `1`=exist, `0`=doesnt exist, 
+	 * 
+	 */
+	public function verifyTag(string $tag) : int
+	{
+		$table = Tables::Accounts(true);
+		$fieldID = $table->id;
+		$fieldTag = $table->tag;
+
+
+		$result = $this->select(
+									"`{$fieldID}`",                 // select
+									"`{$fieldTag}`=?",              // condition
+									null,                           // other
+									array($tag)                     // parms
+				    			);
+
+		if(is_array($result)||$result == 2)
+			return 1;
+
+		return 0;
+	}
+
+	/**
+	 * Update the tag field in DB
+	 *
+	 * @param string $tag
+	 * 
+	 */
+	public function setTag(string $tag) : void
+	{
+		$table = Tables::Accounts(true);
+		$fieldEmail = $table->email;
+		$fieldTag = $table->tag;
+
+		$this->db->update(
+							Tables::Accounts(false),
+							array($fieldTag),
+							"`{$fieldEmail}`=?",
+							array($tag, $this->email)
+		);
+	}
+	/**
 	 * Verify if an account exist and optional if the password match
 	 *
 	 * @param string $password     Password of the account, if is `empty` the password wont be checking
@@ -34,35 +111,24 @@ class User
 		$fieldEmail = $table->email;
 		$fieldPassword = $table->password;
 
-		$result = $this->db->select(
-										"`{$fieldPassword}`",           // select
-										Tables::Accounts(false),        // location
-										"`{$fieldEmail}`=?",            // condition
-										null,                           // others
-										array($this->email)             // parms
-				    				);
+		$result = $this->select(
+									"`{$fieldPassword}`",           // select
+									"`{$fieldEmail}`=?",            // condition
+									null,                           // other
+									array($this->email)             // parms
+				    			);
 
-		if(isset($result->num_rows) && $result->num_rows > 0)
+		if(is_array($result))
 		{
 			if(empty($password))
-			{
-					return -2;
-			}
+				return -2;
 
-			if($result->num_rows > 1)
-			{
-				return 2;
-			}
-
-			$row = $result->fetch_array(MYSQLI_ASSOC);
-			if(hash_equals($row[$fieldPassword],$password))
-			{
+			if(hash_equals($result[$fieldPassword],$password))
 				return 1;
-			}
 
 			return 0;
 		}
-		return -1;
+		return $result;
 	}
 	/**
 	 * Register new account
