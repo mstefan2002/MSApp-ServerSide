@@ -30,7 +30,6 @@ class UpdateTag implements Request_Type
 				}
 		Send success:
 			type=1
-			session=id
 	*/
 	public static function call(Database $db, ProcessingRequest $pRequest, Output $output, Log $log)
 	{
